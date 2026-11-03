@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.log
+*.zip
+.env
+.env.*
+.venv/
+node_modules/
+.qa-tools/
+dist/
+reports/

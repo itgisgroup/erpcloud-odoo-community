@@ -1,0 +1,15 @@
+{
+    "name": "Vietnam Mobile Lookup",
+    "version": "20.0.1.0.0",
+    "summary": "Find contacts across Vietnamese mobile number formats",
+    "category": "Sales/CRM",
+    "author": "ERPCloud",
+    "website": "https://erpcloud.vn",
+    "support": "info@erpcloud.vn",
+    "license": "LGPL-3",
+    "depends": ["contacts"],
+    "images": ["static/description/cover.png", "static/description/screenshot-search.png"],
+    "data": [],
+    "installable": True,
+    "application": False,
+}

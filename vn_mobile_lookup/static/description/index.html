@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Vietnam Mobile Lookup</title></head>
+<body>
+  <div class="container py-4">
+    <h1>Vietnam Mobile Lookup</h1>
+    <p>Find a contact using the same Vietnamese mobile number in local or international format.</p>
+    <h2>One number, several ways to type it</h2>
+    <p>A contact saved as <strong>+84 912 345 678</strong> appears when you search for <strong>0912345678</strong>. Spaces and dashes in full mobile numbers are accepted.</p>
+    <img src="cover.png" alt="Vietnamese mobile number formats leading to one contact" class="img-fluid"/>
+    <h2>See it in Odoo</h2>
+    <p>The demo contact keeps its original <strong>+84</strong> number. Searching the <strong>0</strong> form returns the same contact.</p>
+    <img src="screenshot-contact.png" alt="Demo contact with an international-format Vietnamese mobile number" class="img-fluid"/>
+    <img src="screenshot-search.png" alt="Contacts search for 0912345678 returning the same demo contact" class="img-fluid"/>
+    <h2>Built for everyday contact lookup</h2>
+    <ul>
+      <li>Works in the Contacts name search and Odoo contact suggestions.</li>
+      <li>Uses indexed lookup keys; original phone values stay intact.</li>
+      <li>No account, API key, external service, or configuration required.</li>
+      <li>Respects the user's existing Odoo record access.</li>
+    </ul>
+    <h2>Scope</h2>
+    <p>Recognizes full Vietnamese ten-digit mobile numbers beginning with 03, 05, 07, 08, or 09. This app does not validate ownership, block duplicates, or search partial mobile numbers. Contacts explicitly assigned to another country are not included in Vietnamese equivalent-format lookup.</p>
+    <h2>Requirements</h2>
+    <p>Tested on Odoo 20 Community in a self-hosted environment with the standard Contacts app. Odoo.sh and Enterprise have not yet been tested. Python addons cannot be installed on Odoo Online.</p>
+    <p>Free and open source under LGPL-3. Support: <a href="mailto:info@erpcloud.vn">info@erpcloud.vn</a>.</p>
+  </div>
+</body>
+</html>
