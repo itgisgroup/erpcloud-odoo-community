@@ -1,0 +1,30 @@
+<section class="container">
+  <div class="p-5 mb-4 bg-dark text-white rounded">
+    <p class="text-info font-weight-bold">ERPCloud · Odoo 20 Community</p>
+    <h1>Sales Commission Ledger</h1>
+    <p class="lead">See how each posted invoice earns commission, review refunds, approve statements and record payouts.</p>
+    <p>Free · LGPL-3 · No ERPCloud account required</p>
+  </div>
+
+  <h2>From invoice to earning</h2>
+  <p>Set rates by product, category or default. Choose recognition at invoice posting or full customer payment. Each earning keeps its source and calculation snapshot. A credit note linked to the original invoice creates a negative earning at the original rate.</p>
+  <img class="img-fluid rounded border mb-4" src="screenshot_earnings.png" alt="Real Odoo earnings list with sample invoice and refund"/>
+
+  <h2>Approve a clear statement</h2>
+  <p>Managers collect earnings for one salesperson and period, resolve exceptions, and approve. A draft can be rejected with a reason and reopened. Approved figures stay in the ledger; corrections use reasoned adjustments. Finance records partial payouts with an external reference. Payouts do not create bank, payroll or accounting transactions.</p>
+  <img class="img-fluid rounded border mb-4" src="screenshot_statement.png" alt="Real commission statement showing earned, paid and due totals"/>
+
+  <h2>Preview, print and export</h2>
+  <p>The statement has an HTML preview and a QWeb PDF with signatures. The report dialog previews a filtered table and exports a numeric XLSX workbook with Summary and Details sheets. All amounts use the same saved earnings.</p>
+  <img class="img-fluid rounded border mb-4" src="screenshot_plans.png" alt="Commission plan configuration in Odoo 20 Community"/>
+
+  <h2>Install in four steps</h2>
+  <ol>
+    <li>Use Odoo 20 Community on Odoo.sh or a server that accepts custom Python addons. Install the standard Odoo 20 Python requirements, including XlsxWriter.</li>
+    <li>Copy <code>erpcloud_sales_commission</code> into an addons path, update Apps and install it. Odoo installs the declared Sales and Invoicing dependencies.</li>
+    <li>Assign Commission Salesperson, Manager or Finance roles in Settings → Users.</li>
+    <li>Create one active plan per salesperson/company/period and add a default rate.</li>
+  </ol>
+  <p><strong>Scope:</strong> one salesperson per sale source. Partial customer payments are not prorated. Ambiguous or unlinked sources appear in Exceptions. No POS, payroll, team split or automatic payment integration. Normal installation adds no sample records. Odoo Online cannot install custom Python modules.</p>
+  <p>Support: <a href="mailto:info@erpcloud.vn">info@erpcloud.vn</a></p>
+</section>

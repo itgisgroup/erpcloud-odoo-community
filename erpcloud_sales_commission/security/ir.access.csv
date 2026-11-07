@@ -1,0 +1,22 @@
+id,name,model_id,group_id/id,operation,domain
+restrict_plan_company,Plan allowed companies,ep.commission.plan,,crud,"[('company_id', 'in', company_ids)]"
+restrict_rule_company,Rate allowed companies,ep.commission.rule,,crud,"[('company_id', 'in', company_ids)]"
+restrict_entry_company,Earning allowed companies,ep.commission.entry,,crud,"[('company_id', 'in', company_ids)]"
+restrict_exception_company,Exception allowed companies,ep.commission.exception,,crud,"[('company_id', 'in', company_ids)]"
+restrict_statement_company,Statement allowed companies,ep.commission.statement,,crud,"[('company_id', 'in', company_ids)]"
+restrict_payout_company,Payout allowed companies,ep.commission.payout,,crud,"[('company_id', 'in', company_ids)]"
+restrict_adjustment_company,Adjustment allowed companies,ep.commission.adjustment,,crud,"[('company_id', 'in', company_ids)]"
+access_plan_user,Own commission plans,ep.commission.plan,erpcloud_sales_commission.group_commission_user,r,"[('user_id', '=', user.id)]"
+access_plan_manager,Manage commission plans,ep.commission.plan,erpcloud_sales_commission.group_commission_manager,cru,
+access_rule_manager,Manage commission rules,ep.commission.rule,erpcloud_sales_commission.group_commission_manager,crud,
+access_entry_user,Own commission earnings,ep.commission.entry,erpcloud_sales_commission.group_commission_user,r,"[('user_id', '=', user.id)]"
+access_entry_manager,Manage commission earnings,ep.commission.entry,erpcloud_sales_commission.group_commission_manager,ru,
+access_entry_finance,Finance commission earnings,ep.commission.entry,erpcloud_sales_commission.group_commission_finance,r,
+access_exception_manager,Manage commission exceptions,ep.commission.exception,erpcloud_sales_commission.group_commission_manager,cru,
+access_statement_user,Own commission statements,ep.commission.statement,erpcloud_sales_commission.group_commission_user,r,"[('user_id', '=', user.id)]"
+access_statement_manager,Manage commission statements,ep.commission.statement,erpcloud_sales_commission.group_commission_manager,cru,
+access_statement_finance,Finance commission statements,ep.commission.statement,erpcloud_sales_commission.group_commission_finance,r,
+access_payout_finance,Record commission payouts,ep.commission.payout,erpcloud_sales_commission.group_commission_finance,cr,
+access_payout_manager,Read commission payouts,ep.commission.payout,erpcloud_sales_commission.group_commission_manager,r,
+access_adjustment_manager,Manage commission adjustments,ep.commission.adjustment,erpcloud_sales_commission.group_commission_manager,cru,
+access_wizard_user,Commission report wizard,ep.commission.report.wizard,erpcloud_sales_commission.group_commission_user,crud,

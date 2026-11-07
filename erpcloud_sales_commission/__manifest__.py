@@ -1,0 +1,18 @@
+{
+    'name': 'Sales Commission Ledger',
+    'summary': 'Auditable sales commission from posted customer invoices',
+    'version': '20.0.1.0.0',
+    'category': 'Sales',
+    'author': 'ERPCloud',
+    'website': 'https://erpcloud.vn',
+    'support': 'info@erpcloud.vn',
+    'license': 'LGPL-3',
+    'depends': ['sale', 'account'],
+    'external_dependencies': {'python': ['xlsxwriter']},
+    'data': ['security/commission_security.xml', 'security/ir.access.csv',
+             'data/commission_cron.xml', 'report/statement_report.xml',
+             'wizard/report_wizard_views.xml', 'views/commission_views.xml'],
+    'images': ['static/description/cover.png'],
+    'application': True,
+    'installable': True,
+}

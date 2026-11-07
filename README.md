@@ -7,6 +7,7 @@ Free ERPCloud addons for Odoo Community, organized like an Odoo/OCA addon reposi
 | Module | Purpose | License |
 |---|---|---|
 | [`vn_mobile_lookup`](vn_mobile_lookup/README.md) | Find Vietnamese mobile numbers across `0`, `+84` and `0084` formats without rewriting stored values | LGPL-3 |
+| [`erpcloud_sales_commission`](erpcloud_sales_commission/README.md) | Invoice-linked sales commission plans, refund ledger, statements, payouts, PDF and Excel | LGPL-3 |
 
 Each module has its own manifest, license, README and release evidence. Install by adding the checked-out repository to your Odoo addons path, updating the Apps list and installing only the modules you need. The `20.0` branch has been tested against Odoo 20 Community; other branches must be tested separately before release.
 

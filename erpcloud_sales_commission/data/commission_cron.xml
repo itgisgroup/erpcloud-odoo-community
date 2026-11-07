@@ -1,0 +1,1 @@
+<odoo><record id="ir_cron_commission_sync" model="ir.cron"><field name="name">Commission: reconcile posted invoices</field><field name="model_id" ref="model_ep_commission_entry"/><field name="state">code</field><field name="code">model._cron_sync()</field><field name="interval_number">1</field><field name="interval_type">days</field></record></odoo>

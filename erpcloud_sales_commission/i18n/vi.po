@@ -1,0 +1,1109 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* erpcloud_sales_commission
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 20.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-07 07:55+0000\n"
+"PO-Revision-Date: 2026-11-07 07:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: Vietnamese\n"
+"Language: vi_VN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: erpcloud_sales_commission
+#: model:ir.module.module,description:base.module_erpcloud_sales_commission
+msgid ""
+"# Sales Commission Ledger for Odoo 20 Community\n"
+"\n"
+"Free, source available sales commission accounting for one salesperson per sale order. The module creates its own **Commissions** app. It extends Odoo Sales and Invoicing through ORM hooks, without changing their menus, forms, totals or accounting entries.\n"
+"\n"
+"## Install\n"
+"\n"
+"1. Use Odoo 20 Community on Odoo.sh or your own server. Python package `xlsxwriter` must be installed in the Odoo environment.\n"
+"2. Copy `erpcloud_sales_commission` into an addons path. Update the Apps list and install **Sales Commission Ledger**. Odoo installs the declared `sale` and `account` dependencies.\n"
+"3. In Settings → Users, assign **Commission Salesperson**, **Commission Manager** or **Commission Finance**. Assign a manager to configure plans.\n"
+"4. Open **Commissions → Configuration → Plans & Rates**. Create a plan for each salesperson and company, set effective dates, recognition at invoice posting or full customer payment, and add exactly one default rate. Optional product and category rates override the default.\n"
+"\n"
+"Installation creates no plans, commissions or customer sample data. Sales orders and invoices remain in core Odoo.\n"
+"\n"
+"## Daily workflow\n"
+"\n"
+"1. Confirm a sale order with one salesperson, create its customer invoice and post it. The app reads the invoiced line subtotal after discount and before tax. For a full payment plan, the invoice must be fully paid before the earning is created.\n"
+"2. Open **Commissions → Earnings** to inspect the immutable calculation and its source. When a refund is made through a credit note linked to the original invoice, it creates a negative earning using the original rate. Ambiguous source lines appear in **Configuration → Exceptions**.\n"
+"3. A manager creates a statement for one salesperson, company and period; clicks **Collect earnings** and checks the lines. Resolve open exceptions before **Approve**. Managers cannot approve their own statement.\n"
+"4. Use **Preview**, **Print PDF**, or **Excel** from the statement. The Excel dialog also previews a filtered table. A Finance user records a payout with date and external reference in **Commissions → Payouts**. Partial payouts keep an outstanding balance.\n"
+"5. Managers use **Configuration → Adjustments** for signed, reasoned corrections. Existing approved earnings and payouts are not overwritten.\n"
+"\n"
+"The payout record is an audit record only. It does **not** make a bank transfer, payroll entry, or journal entry.\n"
+"\n"
+"## Quy trình nhanh (Tiếng Việt)\n"
+"\n"
+"1. Cài Odoo 20 Community, bổ sung Python `xlsxwriter`, chép thư mục module vào addons path, cập nhật danh sách Apps và cài **Sales Commission Ledger**.\n"
+"2. Gán nhóm quyền Hoa hồng cho nhân viên, quản lý và kế toán trong Settings → Users.\n"
+"3. Tại **Commissions → Configuration → Plans & Rates**, lập chính sách theo người bán/công ty/kỳ; chọn ghi nhận khi hóa đơn ghi sổ hoặc khi khách thanh toán đủ. Thêm tỷ lệ mặc định và tỷ lệ riêng cho sản phẩm/nhóm nếu cần.\n"
+"4. Xác nhận đơn bán và ghi sổ hóa đơn trong Odoo lõi; mở **Earnings** để kiểm tra. Chứng từ không rõ nguồn được đưa vào **Exceptions**.\n"
+"5. Quản lý tạo **Statements**, gom phát sinh, phê duyệt, xem trước/in PDF/xuất Excel. Kế toán nhập **Payouts** để ghi nhận số đã chi và số còn phải trả.\n"
+"\n"
+"## Scope and limits\n"
+"\n"
+"- One salesperson per invoice line; ambiguous multi-owner or unlinked source lines are flagged for review.\n"
+"- Product → category → default rate priority. One active plan per salesperson/company/date.\n"
+"- Commission base uses customer invoice lines, not the entire sale order, so partial invoicing is not double counted.\n"
+"- Refunds need an explicit Odoo reversal link. A refund with multiple matching original product lines is flagged rather than guessed.\n"
+"- Customer partial payments are not prorated. Only fully paid invoices qualify under that policy.\n"
+"- No POS, subscriptions, split commission, team tiers, payroll or automatic payment integration in this release.\n"
+"- Excel download needs `xlsxwriter`. Odoo Online does not accept custom Python modules.\n"
+"\n"
+"Support: **info@erpcloud.vn**. License: **LGPL-3**. Source ownership: ERPCloud; no third party addon code or images are included.\n"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.report,print_report_name:erpcloud_sales_commission.action_report_commission_statement
+msgid "'Commission_%s' % (object.name or object.id)"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid ""
+"<span>Salesperson signature: ____________________</span><span>Approved by: "
+"____________________</span>"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "<strong>Commission:</strong>"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "<strong>Company:</strong>"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "<strong>Paid:</strong>"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "<strong>Period:</strong>"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "A nonzero adjustment with a reason is required."
+msgstr "Điều chỉnh phải khác 0 và có lý do."
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_plan_form
+msgid "Activate"
+msgstr "Áp dụng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_plan__state__active
+msgid "Active"
+msgstr "Đang áp dụng"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Active plans for one salesperson cannot overlap."
+msgstr "Các chính sách đang áp dụng cho cùng nhân viên không được trùng kỳ."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Add a rejection reason to a draft statement."
+msgstr "Hãy nhập lý do từ chối cho bảng kê nháp."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_entry__entry_type__adjustment
+msgid "Adjustment"
+msgstr "Điều chỉnh"
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.act_window,name:erpcloud_sales_commission.action_commission_adjustments
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_adjustments
+msgid "Adjustments"
+msgstr "Điều chỉnh"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/wizard/report_wizard.py:0
+msgid "All permitted"
+msgstr "Tất cả được phép"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__amount
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__amount
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__amount
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__amount
+msgid "Amount"
+msgstr "Số tiền"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "An approved statement cannot be changed."
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Approve"
+msgstr "Duyệt"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_adjustment_form
+msgid "Approve adjustment"
+msgstr "Duyệt điều chỉnh"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_adjustment__state__approved
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_statement__state__approved
+msgid "Approved"
+msgstr "Đã duyệt"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__approved_at
+msgid "Approved At"
+msgstr "Thời điểm duyệt"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__approved_by
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__approved_by
+msgid "Approved By"
+msgstr "Người duyệt"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Approved adjustments are locked."
+msgstr "Điều chỉnh đã duyệt được khóa."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Approved statements are locked."
+msgstr "Bảng kê đã duyệt được khóa."
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_plan_form
+msgid "Archive"
+msgstr "Lưu trữ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_plan__state__archived
+msgid "Archived"
+msgstr "Đã lưu trữ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.module.module,summary:base.module_erpcloud_sales_commission
+msgid "Auditable sales commission from posted customer invoices"
+msgstr "Hoa hồng theo hóa đơn đã ghi sổ, có thể đối soát"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Base"
+msgstr "Cơ sở tính"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__base_company_currency
+msgid "Base Company Currency"
+msgstr "Cơ sở tiền công ty"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__base_move_currency
+msgid "Base Move Currency"
+msgstr "Cơ sở tiền chứng từ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__category_id
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_rule__scope__category
+msgid "Category"
+msgstr "Nhóm sản phẩm"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_report_wizard_form
+msgid "Close"
+msgstr "Đóng"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Collect earnings"
+msgstr "Gom phát sinh"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Collect earnings before approval."
+msgstr "Hãy gom phát sinh trước khi duyệt."
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Commission"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model,name:erpcloud_sales_commission.model_ep_commission_adjustment
+msgid "Commission Adjustment Request"
+msgstr "Phiếu điều chỉnh hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model,name:erpcloud_sales_commission.model_ep_commission_entry
+msgid "Commission Earning Ledger"
+msgstr "Sổ phát sinh hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model,name:erpcloud_sales_commission.model_ep_commission_exception
+msgid "Commission Exception"
+msgstr "Ngoại lệ hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:res.groups,name:erpcloud_sales_commission.group_commission_finance
+msgid "Commission Finance"
+msgstr "Kế toán hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:res.groups,name:erpcloud_sales_commission.group_commission_manager
+msgid "Commission Manager"
+msgstr "Quản lý hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model,name:erpcloud_sales_commission.model_ep_commission_payout
+msgid "Commission Payout Record"
+msgstr "Ghi nhận chi trả hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model,name:erpcloud_sales_commission.model_ep_commission_plan
+msgid "Commission Plan"
+msgstr "Chính sách hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model,name:erpcloud_sales_commission.model_ep_commission_rule
+msgid "Commission Rate Rule"
+msgstr "Quy tắc tỷ lệ hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model,name:erpcloud_sales_commission.model_ep_commission_report_wizard
+msgid "Commission Report Preview and Excel Export"
+msgstr "Xem trước và xuất Excel hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:res.groups,name:erpcloud_sales_commission.group_commission_user
+msgid "Commission Salesperson"
+msgstr "Nhân viên hưởng hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.report,name:erpcloud_sales_commission.action_report_commission_statement
+#: model:ir.model,name:erpcloud_sales_commission.model_ep_commission_statement
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Commission Statement"
+msgstr "Bảng kê hoa hồng"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Commission entries can only be created by the reconciliation service."
+msgstr "Chỉ dịch vụ đối soát được tạo dòng sổ hoa hồng."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Commission entries cannot be deleted."
+msgstr "Không được xóa dòng sổ hoa hồng."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Commission ledger snapshots are immutable. Use an adjustment."
+msgstr "Dữ liệu sổ hoa hồng không thể sửa; hãy tạo phiếu điều chỉnh."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/wizard/report_wizard.py:0
+msgid "Commission preview"
+msgstr "Xem trước hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.act_window,name:erpcloud_sales_commission.action_commission_report_wizard
+msgid "Commission preview & Excel"
+msgstr "Xem trước và Excel hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_report_wizard_form
+msgid "Commission report"
+msgstr "Báo cáo hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.server,name:erpcloud_sales_commission.ir_cron_commission_sync_ir_actions_server
+msgid "Commission: reconcile posted invoices"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.module.category,name:erpcloud_sales_commission.module_category_commission
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_root
+#: model:res.groups.privilege,name:erpcloud_sales_commission.privilege_commission
+msgid "Commissions"
+msgstr "Hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__company_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__company_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__company_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__company_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__company_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__company_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__company_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__company_id
+msgid "Company"
+msgstr "Công ty"
+
+#. module: erpcloud_sales_commission
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_config
+msgid "Configuration"
+msgstr "Thiết lập"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Create a draft adjustment, then use Approve."
+msgstr "Hãy tạo điều chỉnh nháp rồi dùng nút Duyệt."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Create a draft statement, then use Approve."
+msgstr "Hãy tạo bảng kê nháp rồi dùng nút Duyệt."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__create_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__create_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__create_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__create_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__create_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__create_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__create_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__create_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__create_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__create_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__create_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__create_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__create_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__create_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Credit note is not linked to its original invoice."
+msgstr "Phiếu hoàn chưa liên kết hóa đơn gốc."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__currency_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__currency_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__currency_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__currency_id
+msgid "Currency"
+msgstr "Đồng tiền"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Customer"
+msgstr "Khách hàng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__date
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Date"
+msgstr "Ngày"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__date_from
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__date_from
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__date_from
+msgid "Date From"
+msgstr "Từ ngày"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__date_to
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__date_to
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__date_to
+msgid "Date To"
+msgstr "Đến ngày"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_rule__scope__default
+msgid "Default"
+msgstr "Mặc định"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_account_move__display_name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__display_name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__display_name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__display_name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__display_name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__display_name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__display_name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__display_name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_report_wizard_form
+msgid "Download Excel"
+msgstr "Tải Excel"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_adjustment__state__draft
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_plan__state__draft
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_statement__state__draft
+msgid "Draft"
+msgstr "Nháp"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__due_amount
+msgid "Due Amount"
+msgstr "Còn phải chi"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_entry__entry_type__earning
+msgid "Earning"
+msgstr "Phát sinh"
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.act_window,name:erpcloud_sales_commission.action_commission_entries
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_earnings
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Earnings"
+msgstr "Phát sinh"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+#: code:addons/erpcloud_sales_commission/wizard/report_wizard.py:0
+msgid "End date must be on or after start date."
+msgstr "Ngày kết thúc phải từ ngày bắt đầu trở đi."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__entry_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__entry_ids
+msgid "Entry"
+msgstr "Dòng hoa hồng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__entry_type
+msgid "Entry Type"
+msgstr "Loại phát sinh"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Excel"
+msgstr "Excel"
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.act_window,name:erpcloud_sales_commission.action_commission_exceptions
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_exceptions
+msgid "Exceptions"
+msgstr "Ngoại lệ"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/wizard/report_wizard.py:0
+msgid "From"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_entry__recognition_policy__paid
+msgid "Fully paid"
+msgstr "Đã thanh toán đủ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_plan__recognition__paid
+msgid "Fully paid invoice"
+msgstr "Hóa đơn đã thanh toán đủ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_account_move__id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__id
+msgid "ID"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Invoice / reference"
+msgstr "Hóa đơn / tham chiếu"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Invoice line must link to sale orders with one salesperson."
+msgstr "Dòng hóa đơn phải liên kết đơn bán có đúng một nhân viên phụ trách."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model,name:erpcloud_sales_commission.model_account_move
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__move_id
+msgid "Journal Entry"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__write_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__write_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__write_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__write_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__write_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__write_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__write_uid
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__write_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__write_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__write_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__write_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__write_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__write_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__write_date
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_exception_form
+msgid "Mark resolved"
+msgstr "Đánh dấu đã xử lý"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "More than one commission plan applies."
+msgstr "Có nhiều hơn một chính sách hoa hồng cùng áp dụng."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__move_id
+msgid "Move"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__move_currency_id
+msgid "Move Currency"
+msgstr "Đồng tiền chứng từ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__move_line_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__move_line_id
+msgid "Move Line"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__name
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__name
+msgid "Name"
+msgstr "Tên"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "New"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:res.groups.privilege,placeholder:erpcloud_sales_commission.privilege_commission
+msgid "No"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "No commission rate applies to this product."
+msgstr "Chưa có tỷ lệ hoa hồng áp dụng cho sản phẩm này."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__note
+msgid "Note"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.constraint,message:erpcloud_sales_commission.constraint_ep_commission_exception_line_unique
+msgid "One exception per invoice line."
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Only commission managers can approve adjustments."
+msgstr "Chỉ quản lý hoa hồng được duyệt điều chỉnh."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Only commission managers can approve statements."
+msgstr "Chỉ quản lý hoa hồng được duyệt bảng kê."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Only commission managers can reject statements."
+msgstr "Chỉ quản lý hoa hồng được từ chối bảng kê."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Only commission managers can reopen rejected statements."
+msgstr "Chỉ quản lý hoa hồng được mở lại bảng kê đã từ chối."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Only draft statements can collect earnings."
+msgstr "Chỉ bảng kê nháp mới được gom phát sinh."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Only one rule is allowed for the same scope and target."
+msgstr "Chỉ được có một quy tắc cho cùng phạm vi và đối tượng."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Only rejected statements can be reopened."
+msgstr "Chỉ bảng kê đã từ chối mới được mở lại."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_exception__state__open
+msgid "Open"
+msgstr "Đang mở"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_statement__state__paid
+msgid "Paid"
+msgstr "Đã chi đủ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__paid_amount
+msgid "Paid Amount"
+msgstr "Đã chi"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_statement__state__partially_paid
+msgid "Partially paid"
+msgstr "Đã chi một phần"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__partner_id
+msgid "Partner"
+msgstr "Đối tác"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__payout_ids
+msgid "Payout"
+msgstr "Chi trả"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Payout must be positive and cannot exceed an approved balance."
+msgstr "Số chi phải dương và không vượt số dư đã duyệt."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid ""
+"Payout records are immutable. Record a correcting payout through finance."
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Payout records cannot be deleted."
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.act_window,name:erpcloud_sales_commission.action_commission_payouts
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_payouts
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Payouts"
+msgstr "Chi trả"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__plan_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__plan_id
+msgid "Plan"
+msgstr "Chính sách"
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.act_window,name:erpcloud_sales_commission.action_commission_plans
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_plans
+msgid "Plans & Rates"
+msgstr "Chính sách và tỷ lệ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_entry__recognition_policy__posted
+msgid "Posted"
+msgstr "Đã ghi sổ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_plan__recognition__posted
+msgid "Posted invoice"
+msgstr "Hóa đơn đã ghi sổ"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_report_wizard_form
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Preview"
+msgstr "Xem trước"
+
+#. module: erpcloud_sales_commission
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_report_preview
+msgid "Preview & Excel"
+msgstr "Xem trước và Excel"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__preview_html
+msgid "Preview Html"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Print PDF"
+msgstr "In PDF"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__product_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__product_id
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_rule__scope__product
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Product"
+msgstr "Sản phẩm"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__rate
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__rate
+msgid "Rate"
+msgstr "Tỷ lệ"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Rate %"
+msgstr "Tỷ lệ %"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Rate must be between 0 and 100."
+msgstr "Tỷ lệ phải nằm trong khoảng 0 đến 100%."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__rule_ids
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_plan_form
+msgid "Rates"
+msgstr "Tỷ lệ"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__reason
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__reason
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__reason
+msgid "Reason"
+msgstr "Lý do"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__recognition
+msgid "Recognition"
+msgstr "Điều kiện ghi nhận"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__recognition_date
+msgid "Recognition Date"
+msgstr "Ngày ghi nhận"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__recognition_policy
+msgid "Recognition Policy"
+msgstr "Chính sách ghi nhận"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__recorded_by
+msgid "Recorded By"
+msgstr "Người ghi nhận"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__reference
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__reference
+msgid "Reference"
+msgstr "Số tham chiếu"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_entry__entry_type__refund
+msgid "Refund"
+msgstr "Hoàn tiền"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Refund exceeds the original commission base."
+msgstr "Số hoàn vượt cơ sở tính hoa hồng gốc."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Refund must match exactly one original earning for the product."
+msgstr "Dòng hoàn phải khớp đúng một phát sinh gốc của sản phẩm."
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Reject"
+msgstr "Từ chối"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_statement__state__rejected
+msgid "Rejected"
+msgstr "Đã từ chối"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__rejected_at
+msgid "Rejected At"
+msgstr "Thời điểm từ chối"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__rejected_by
+msgid "Rejected By"
+msgstr "Người từ chối"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__rejection_reason
+msgid "Rejection Reason"
+msgstr "Lý do từ chối"
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.view_commission_statement_form
+msgid "Reopen"
+msgstr "Mở lại"
+
+#. module: erpcloud_sales_commission
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_reports
+msgid "Reports"
+msgstr "Báo cáo"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__resolution_note
+msgid "Resolution Note"
+msgstr "Ghi chú xử lý"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Resolve commission exceptions before approval."
+msgstr "Hãy xử lý ngoại lệ hoa hồng trước khi duyệt."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_exception__state__resolved
+msgid "Resolved"
+msgstr "Đã xử lý"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__resolved_at
+msgid "Resolved At"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__resolved_by
+msgid "Resolved By"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Resolved by successful reconciliation."
+msgstr "Được xử lý sau khi đối soát thành công."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields.selection,name:erpcloud_sales_commission.selection__ep_commission_entry__entry_type__reversal
+msgid "Reversal"
+msgstr "Đảo phát sinh"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__reversal_of_id
+msgid "Reversal Of"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Reversal: %s"
+msgstr "Đảo phát sinh: %s"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/wizard/report_wizard.py:0
+msgid "Rows"
+msgstr "Số dòng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__rule_id
+msgid "Rule"
+msgstr "Quy tắc"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__sale_order_id
+msgid "Sale Order"
+msgstr "Đơn bán"
+
+#. module: erpcloud_sales_commission
+#: model:ir.module.module,shortdesc:base.module_erpcloud_sales_commission
+msgid "Sales Commission Ledger"
+msgstr "Sổ hoa hồng bán hàng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__user_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__user_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__user_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__user_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__user_id
+msgid "Salesperson"
+msgstr "Nhân viên bán hàng"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_rule__scope
+msgid "Scope"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Select a product or category for this rule."
+msgstr "Hãy chọn sản phẩm hoặc nhóm sản phẩm cho quy tắc."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/wizard/report_wizard.py:0
+msgid "Showing first 100 rows; Excel includes every matching row."
+msgstr "Hiện 100 dòng đầu; Excel chứa toàn bộ dòng khớp bộ lọc."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__source_version
+msgid "Source Version"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Source invoice was reset to draft or cancelled."
+msgstr "Hóa đơn nguồn đã về nháp hoặc bị hủy."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_adjustment__state
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_exception__state
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_plan__state
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_statement__state
+msgid "State"
+msgstr "Trạng thái"
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_entry__statement_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_payout__statement_id
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__statement_id
+msgid "Statement"
+msgstr "Bảng kê"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Statement periods for this salesperson cannot overlap."
+msgstr "Kỳ bảng kê của nhân viên này không được chồng lấn."
+
+#. module: erpcloud_sales_commission
+#: model:ir.actions.act_window,name:erpcloud_sales_commission.action_commission_statements
+#: model:ir.ui.menu,name:erpcloud_sales_commission.menu_commission_statements
+msgid "Statements"
+msgstr "Bảng kê"
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/wizard/report_wizard.py:0
+msgid "This company is not in your allowed companies."
+msgstr "Bạn không được truy cập công ty này."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.constraint,message:erpcloud_sales_commission.constraint_ep_commission_entry_line_version_once
+msgid "This invoice line version already has a commission entry."
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "Type"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Use Approve adjustment to create the ledger entry."
+msgstr "Hãy dùng nút Duyệt điều chỉnh để tạo dòng sổ."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Use the approval or payout action to change statement status."
+msgstr "Hãy dùng thao tác duyệt hoặc chi trả để đổi trạng thái bảng kê."
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "Write a resolution note before closing an exception."
+msgstr "Hãy ghi cách xử lý trước khi đóng ngoại lệ."
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__xlsx_file
+msgid "Xlsx File"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model:ir.model.fields,field_description:erpcloud_sales_commission.field_ep_commission_report_wizard__xlsx_filename
+msgid "Xlsx Filename"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#. odoo-python
+#: code:addons/erpcloud_sales_commission/models/commission.py:0
+msgid "You cannot approve your own commission statement."
+msgstr "Bạn không được duyệt bảng kê hoa hồng của chính mình."
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "· <strong>Due:</strong>"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "· <strong>Salesperson:</strong>"
+msgstr ""
+
+#. module: erpcloud_sales_commission
+#: model_terms:ir.ui.view,arch_db:erpcloud_sales_commission.report_statement
+msgid "· <strong>Status:</strong>"
+msgstr ""

@@ -1,0 +1,34 @@
+<odoo>
+  <record id="action_report_commission_statement" model="ir.actions.report">
+    <field name="name">Commission Statement</field><field name="model">ep.commission.statement</field>
+    <field name="report_type">qweb-pdf</field><field name="report_name">erpcloud_sales_commission.report_statement</field>
+    <field name="print_report_name">'Commission_%s' % (object.name or object.id)</field>
+  </record>
+  <template id="report_statement">
+    <t t-call="web.html_container">
+      <t t-foreach="docs" t-as="doc">
+        <t t-call="web.external_layout">
+          <div class="page">
+            <h2>Commission Statement</h2>
+            <p><strong>Company:</strong> <span t-field="doc.company_id.name"/> · <strong>Salesperson:</strong> <span t-field="doc.user_id.name"/></p>
+            <p><strong>Period:</strong> <span t-field="doc.date_from"/> — <span t-field="doc.date_to"/> · <strong>Status:</strong> <span t-field="doc.state"/></p>
+            <table class="table table-sm table-bordered">
+              <thead><tr><th>Date</th><th>Invoice / reference</th><th>Customer</th><th>Product</th><th>Type</th><th class="text-end">Base</th><th class="text-end">Rate %</th><th class="text-end">Commission</th></tr></thead>
+              <tbody>
+                <tr t-foreach="doc.entry_ids.sorted(key=lambda e: (e.recognition_date, e.move_id.id, e.id))" t-as="line">
+                  <td><span t-field="line.recognition_date"/></td><td><span t-field="line.name"/></td>
+                  <td><span t-field="line.partner_id.name"/></td><td><span t-field="line.product_id.name"/></td><td><span t-field="line.entry_type"/></td>
+                  <td class="text-end"><span t-field="line.base_company_currency"/></td><td class="text-end"><span t-field="line.rate"/></td>
+                  <td class="text-end"><span t-field="line.amount"/></td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="text-end"><strong>Commission:</strong> <span t-field="doc.amount"/> <span t-field="doc.currency_id.name"/></p>
+            <p class="text-end"><strong>Paid:</strong> <span t-field="doc.paid_amount"/> · <strong>Due:</strong> <span t-field="doc.due_amount"/></p>
+            <div style="margin-top:45px;display:flex;justify-content:space-between"><span>Salesperson signature: ____________________</span><span>Approved by: ____________________</span></div>
+          </div>
+        </t>
+      </t>
+    </t>
+  </template>
+</odoo>
