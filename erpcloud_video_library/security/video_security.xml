@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- Video Module Category -->
+        <record id="module_category_erpcloud_video_library" model="ir.module.category">
+            <field name="name">ERPCloud Video</field>
+            <field name="description">Manage ERPCloud Professional Video Tutorials</field>
+            <field name="sequence">60</field>
+        </record>
+
+        <!-- Video Privilege -->
+        <record id="res_groups_privilege_video" model="res.groups.privilege">
+            <field name="name">Video Library</field>
+            <field name="description">Manage professional video tutorials, categories and tags</field>
+            <field name="category_id" ref="module_category_erpcloud_video_library"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <!-- Video User Group -->
+        <record id="group_video_user" model="res.groups">
+            <field name="name">User: View and contribute</field>
+            <field name="sequence">10</field>
+            <field name="privilege_id" ref="res_groups_privilege_video"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Video User: Can view and create video suggestions</field>
+        </record>
+
+        <!-- Video Manager Group -->
+        <record id="group_video_manager" model="res.groups">
+            <field name="name">Manager: Full access</field>
+            <field name="sequence">30</field>
+            <field name="privilege_id" ref="res_groups_privilege_video"/>
+            <field name="implied_ids" eval="[(4, ref('group_video_user'))]"/>
+            <field name="comment">Video Manager: Full access to video management and settings</field>
+        </record>
+    </data>
+</odoo>

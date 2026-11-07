@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="s_video_library" name="Video Library">
+        <section class="video_library_section py-5 s_video_library" data-v-limit="6">
+            <div class="container text-center">
+                <div class="video_library_badge mb-3">
+                    <i class="fa fa-youtube"></i> Video Library
+                </div>
+                <h2 class="erpcloud-heading-lg mb-4">
+                    Watch the <span class="erpcloud-text-gradient">latest videos</span>
+                </h2>
+                <div class="video_filter_buttons mb-5" id="video_filters">
+                    <button class="video_filter_btn active" data-category="all">All</button>
+                    <!-- Categories will be injected here via JS if needed, or rendered via t-foreach -->
+                </div>
+                <div class="row video_cards_grid mb-5" id="videoGrid">
+                    <!-- Loading placeholder -->
+                    <div class="col-12 text-center py-5">
+                        <i class="fa fa-spinner fa-spin fa-3x text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+</odoo>

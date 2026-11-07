@@ -1,0 +1,215 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Blog Post List View (WordPress-like list) -->
+    <record id="view_blog_post_list" model="ir.ui.view">
+        <field name="name">erpcloud.blog.post.list</field>
+        <field name="model">erpcloud.blog.post</field>
+        <field name="arch" type="xml">
+            <list string="Bài viết" decoration-muted="state == 'archived'" decoration-info="state == 'draft'" decoration-success="state == 'published'">
+                <field name="name" string="Tiêu đề"/>
+                <field name="author_id" string="Tác giả" widget="many2one_avatar_user"/>
+                <field name="category_id" string="Danh mục"/>
+                <field name="tag_ids" string="Thẻ" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                <field name="state" string="Trạng thái" widget="badge" decoration-info="state == 'draft'" decoration-warning="state == 'review'" decoration-success="state == 'published'" decoration-muted="state == 'archived'"/>
+                <field name="published_date" string="Ngày xuất bản"/>
+                <field name="view_count" string="Lượt xem"/>
+                <field name="comment_count" string="Bình luận"/>
+                <field name="reading_time" string="Thời gian đọc (phút)"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Blog Post Kanban View (grouped by state) -->
+    <record id="view_blog_post_kanban" model="ir.ui.view">
+        <field name="name">erpcloud.blog.post.kanban</field>
+        <field name="model">erpcloud.blog.post</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="author_id"/>
+                <field name="cover_image"/>
+                <field name="state"/>
+                <field name="published_date"/>
+                <field name="view_count"/>
+                <field name="comment_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex flex-column">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('erpcloud.blog.post', 'cover_image', record.id.raw_value)" alt="Cover" class="o_image_64_cover"/>
+                            </div>
+                            <div class="mt-2">
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                                <div class="text-muted">
+                                    <field name="author_id" widget="many2one_avatar_user"/>
+                                </div>
+                                <div class="d-flex justify-content-between mt-2">
+                                    <div>
+                                        <field name="published_date" widget="date"/>
+                                    </div>
+                                    <div>
+                                        <span title="Lượt xem"><i class="fa fa-eye"/> <field name="view_count"/></span>
+                                        <span title="Bình luận" class="ms-2"><i class="fa fa-comment"/> <field name="comment_count"/></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Blog Post Form View (WordPress-like editor) -->
+    <record id="view_blog_post_form" model="ir.ui.view">
+        <field name="name">erpcloud.blog.post.form</field>
+        <field name="model">erpcloud.blog.post</field>
+        <field name="arch" type="xml">
+            <form string="Bài viết">
+                <header>
+                    <button name="action_publish" string="Xuất bản" type="object" class="oe_highlight" invisible="state == 'published'"/>
+                    <button name="action_unpublish" string="Gỡ xuất bản" type="object" invisible="state != 'published'"/>
+                    <button name="action_submit_review" string="Gửi duyệt" type="object" invisible="state != 'draft'"/>
+                    <button name="action_archive" string="Lưu trữ" type="object" invisible="state == 'archived'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,review,published"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Tiêu đề"/>
+                        <h1>
+                            <field name="name" placeholder="Nhập tiêu đề bài viết..." required="1"/>
+                        </h1>
+                        <label for="subtitle" string="Tiêu đề phụ"/>
+                        <h3>
+                            <field name="subtitle" placeholder="Tiêu đề phụ (tùy chọn)..."/>
+                        </h3>
+                        <group>
+                            <group>
+                                <field name="slug" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="author_id" widget="many2one_avatar_user"/>
+                            </group>
+                        </group>
+                    </div>
+
+                    <notebook>
+                        <!-- Tab: Nội dung -->
+                        <page string="Nội dung" name="content">
+                            <group>
+                                <field name="cover_image" widget="image" class="oe_avatar"/>
+                            </group>
+                            <group>
+                                <field name="content" widget="html" options="{'style-inline': true, 'resizable': true, 'collaborative': true}" style="min-height: 350px;"/>
+                            </group>
+                            <group>
+                                <field name="excerpt" placeholder="Trích đoạn ngắn (tự động tạo nếu để trống)..." widget="text"/>
+                            </group>
+                            <group>
+                                <field name="reading_time" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <!-- Tab: SEO -->
+                        <page string="SEO" name="seo">
+                            <group>
+                                <group string="Meta Tags">
+                                    <field name="seo_title" placeholder="Tiêu đề SEO (60 ký tự)"/>
+                                    <field name="seo_description" placeholder="Mô tả SEO (160 ký tự)"/>
+                                    <field name="seo_keywords" placeholder="Từ khóa, phân cách bằng dấu phẩy"/>
+                                </group>
+                                <group string="Open Graph">
+                                    <field name="og_title" placeholder="Tiêu đề khi chia sẻ"/>
+                                    <field name="og_description" placeholder="Mô tả khi chia sẻ"/>
+                                    <field name="og_image" widget="image"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Schema.org">
+                                    <field name="schema_type" widget="selection"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Tab: Cài đặt -->
+                        <page string="Cài đặt" name="settings">
+                            <group>
+                                <group string="Phân loại">
+                                    <field name="category_id" options="{'no_create': True}"/>
+                                    <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                </group>
+                                <group string="Tùy chọn">
+                                    <field name="is_featured"/>
+                                    <field name="is_pinned"/>
+                                    <field name="allow_comments"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Lên lịch">
+                                    <field name="published_date"/>
+                                </group>
+                                <group string="Bài viết liên quan">
+                                    <field name="related_post_ids" widget="many2many_tags" domain="[('id', '!=', id)]"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Tab: Thống kê -->
+                        <page string="Thống kê" name="analytics">
+                            <group>
+                                <group string="Lượt xem">
+                                    <field name="view_count" readonly="1"/>
+                                    <field name="reading_time" readonly="1"/>
+                                </group>
+                                <group string="Tương tác">
+                                    <field name="comment_count" readonly="1"/>
+                                    <field name="share_count" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="toc_json" readonly="1" widget="text"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Blog Post Search View -->
+    <record id="view_blog_post_search" model="ir.ui.view">
+        <field name="name">erpcloud.blog.post.search</field>
+        <field name="model">erpcloud.blog.post</field>
+        <field name="arch" type="xml">
+            <search string="Search Posts">
+                <field name="name"/>
+                <field name="author_id"/>
+                <field name="category_id"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Blog Post Action -->
+    <record id="action_blog_post" model="ir.actions.act_window">
+        <field name="name">Bài viết</field>
+        <field name="res_model">erpcloud.blog.post</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="context">{'search_default_published': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo bài viết đầu tiên!
+            </p>
+            <p>
+                Nhấn nút "Tạo" để viết bài viết mới.<br/>
+                Hệ thống hỗ trợ đầy đủ tính năng như WordPress.
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id,group_id/id,operation,domain
+access_erpcloud_video_user,ERPCloud Video User,erpcloud.video,base.group_user,r,
+access_erpcloud_video_category_user,ERPCloud Video Category User,erpcloud.video.category,base.group_user,r,
+access_erpcloud_video_tag_user,ERPCloud Video Tag User,erpcloud.video.tag,base.group_user,r,
+access_erpcloud_video_admin,ERPCloud Video Admin,erpcloud.video,base.group_system,crud,
+access_erpcloud_video_category_admin,ERPCloud Video Category Admin,erpcloud.video.category,base.group_system,crud,
+access_erpcloud_video_tag_admin,ERPCloud Video Tag Admin,erpcloud.video.tag,base.group_system,crud,

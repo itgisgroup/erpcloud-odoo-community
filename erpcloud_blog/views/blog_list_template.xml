@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="blog_list_template" name="ERPCloud Blog and News">
+    <t t-call="website.layout">
+      <t t-set="additional_title">Blog &amp; News</t>
+      <div id="wrap" class="ec-blog-page">
+        <section class="ec-blog-hero">
+          <div class="container">
+            <span class="ec-blog-eyebrow">BLOG &amp; NEWS</span>
+            <h1><t t-if="current_category">Articles by category</t><t t-elif="current_tag">Articles by topic</t><t t-elif="search_query">Search results</t><t t-else="">Ideas worth sharing.</t></h1>
+            <p>Publish updates, guides and practical knowledge in a clear reading space.</p>
+            <form action="/blog" method="get" role="search" class="ec-blog-search">
+              <label for="ec_blog_query" class="visually-hidden">Search articles</label>
+              <input id="ec_blog_query" type="search" name="search" t-att-value="search_query or ''" placeholder="Search articles"/>
+              <button type="submit">Search</button>
+            </form>
+          </div>
+        </section>
+        <section class="container ec-blog-content">
+          <div class="ec-blog-toolbar"><h2>Latest articles</h2><span><t t-out="total_posts"/> articles</span></div>
+          <nav class="ec-blog-categories" aria-label="Article categories">
+            <a href="/blog" t-att-class="'is-active' if not current_category else ''">All</a>
+            <t t-foreach="categories" t-as="cat">
+              <a t-attf-href="/blog?category=#{cat.slug}" t-att-class="'is-active' if current_category == cat.slug else ''"><t t-out="cat.name"/></a>
+            </t>
+          </nav>
+          <div t-if="posts" class="ec-blog-grid">
+            <t t-foreach="posts" t-as="post">
+              <article class="ec-blog-card">
+                <a t-attf-href="/blog/#{post.slug}" t-att-aria-label="post.name">
+                  <div class="ec-blog-card-art">
+                    <img t-if="post.cover_image" t-att-src="'data:image/png;base64,' + post.cover_image.decode('utf-8')" t-att-alt="post.name" loading="lazy"/>
+                    <span t-else="" class="ec-blog-card-initial"><t t-out="(post.name or 'A')[:1]"/></span>
+                  </div>
+                  <div class="ec-blog-card-body">
+                    <div class="ec-blog-card-meta"><span><t t-out="post.category_id.name"/></span><time t-if="post.published_date"><t t-out="post.published_date.strftime('%d %b %Y')"/></time></div>
+                    <h3><t t-out="post.name"/></h3>
+                    <p><t t-out="post.excerpt or ''"/></p>
+                    <strong>Read article <i class="fa fa-arrow-right" aria-hidden="true"/></strong>
+                  </div>
+                </a>
+              </article>
+            </t>
+          </div>
+          <div t-else="" class="ec-blog-empty"><h3>No articles yet</h3><p>Published stories will appear here.</p></div>
+          <nav t-if="total_pages > 1" class="ec-blog-pages" aria-label="Article pages">
+            <a t-if="page > 1" t-attf-href="/blog/page/#{page - 1}?category=#{current_category or ''}&amp;tag=#{current_tag or ''}&amp;search=#{search_query or ''}">Previous</a>
+            <span>Page <t t-out="page"/> of <t t-out="total_pages"/></span>
+            <a t-if="page &lt; total_pages" t-attf-href="/blog/page/#{page + 1}?category=#{current_category or ''}&amp;tag=#{current_tag or ''}&amp;search=#{search_query or ''}">Next</a>
+          </nav>
+        </section>
+      </div>
+    </t>
+  </template>
+</odoo>

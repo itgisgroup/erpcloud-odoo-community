@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Blog Comment List View -->
+    <record id="view_blog_comment_list" model="ir.ui.view">
+        <field name="name">erpcloud.blog.comment.list</field>
+        <field name="model">erpcloud.blog.comment</field>
+        <field name="arch" type="xml">
+            <list string="Bình luận" decoration-warning="state == 'pending'" decoration-success="state == 'approved'" decoration-danger="state == 'spam'">
+                <field name="author_name" string="Tác giả"/>
+                <field name="author_email" string="Email"/>
+                <field name="post_id" string="Bài viết"/>
+                <field name="content" string="Nội dung"/>
+                <field name="state" string="Trạng thái" widget="badge" decoration-warning="state == 'pending'" decoration-success="state == 'approved'" decoration-danger="state == 'spam'"/>
+                <field name="create_date" string="Ngày tạo"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Blog Comment Form View -->
+    <record id="view_blog_comment_form" model="ir.ui.view">
+        <field name="name">erpcloud.blog.comment.form</field>
+        <field name="model">erpcloud.blog.comment</field>
+        <field name="arch" type="xml">
+            <form string="Bình luận">
+                <header>
+                    <button name="action_approve" string="Duyệt" type="object" class="oe_highlight" invisible="state == 'approved'"/>
+                    <button name="action_reject" string="Từ chối" type="object" invisible="state == 'rejected'"/>
+                    <button name="action_mark_spam" string="Đánh dấu Spam" type="object" invisible="state == 'spam'"/>
+                    <button name="action_pending" string="Chờ duyệt" type="object" invisible="state == 'pending'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,approved"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="post_id" options="{'no_create': True}"/>
+                            <field name="parent_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="author_name"/>
+                            <field name="author_email"/>
+                            <field name="author_website"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="content" placeholder="Nội dung bình luận..."/>
+                    </group>
+
+                    <group>
+                        <group string="Thông tin kỹ thuật">
+                            <field name="ip_address" readonly="1"/>
+                            <field name="user_agent" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Blog Comment Search View -->
+    <record id="view_blog_comment_search" model="ir.ui.view">
+        <field name="name">erpcloud.blog.comment.search</field>
+        <field name="model">erpcloud.blog.comment</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="author_name"/>
+                <field name="author_email"/>
+                <field name="post_id"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Blog Comment Action -->
+    <record id="action_blog_comment" model="ir.actions.act_window">
+        <field name="name">Bình luận</field>
+        <field name="res_model">erpcloud.blog.comment</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Chưa có bình luận nào!
+            </p>
+            <p>
+                Bình luận từ người đọc sẽ hiển thị ở đây.
+            </p>
+        </field>
+    </record>
+
+</odoo>

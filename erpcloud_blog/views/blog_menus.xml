@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Main Menu -->
+        <menuitem id="menu_blog_root" name="Blog &amp; News" sequence="50"/>
+
+        <!-- Bài viết -->
+        <menuitem id="menu_blog_posts" name="Bài viết" parent="menu_blog_root" sequence="10"/>
+        <menuitem id="menu_blog_post_all" name="Tất cả bài viết" parent="menu_blog_posts" action="action_blog_post" sequence="10"/>
+
+        <!-- Phân loại -->
+        <menuitem id="menu_blog_classification" name="Phân loại" parent="menu_blog_root" sequence="20"/>
+        <menuitem id="menu_blog_category" name="Danh mục" parent="menu_blog_classification" action="action_blog_category" sequence="10"/>
+        <menuitem id="menu_blog_tag" name="Thẻ" parent="menu_blog_classification" action="action_blog_tag" sequence="20"/>
+
+        <!-- Tương tác -->
+        <menuitem id="menu_blog_interaction" name="Tương tác" parent="menu_blog_root" sequence="30"/>
+        <menuitem id="menu_blog_comment" name="Bình luận" parent="menu_blog_interaction" action="action_blog_comment" sequence="10"/>
+
+        <!-- Media -->
+        <menuitem id="menu_blog_media" name="Thư viện Media" parent="menu_blog_root" action="action_blog_media" sequence="40"/>
+
+        <!-- Cấu hình -->
+        <menuitem id="menu_blog_config" name="Cấu hình" parent="menu_blog_root" sequence="100" groups="erpcloud_blog.group_blog_manager"/>
+    </data>
+</odoo>

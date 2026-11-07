@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_erpcloud_video_library_root"
+              name="Video Library"
+              web_icon="erpcloud_video_library,static/description/icon.png"
+              sequence="100"/>
+
+    <menuitem id="menu_erpcloud_video_library_main"
+              name="Videos"
+              parent="menu_erpcloud_video_library_root"
+              action="action_erpcloud_video_library"
+              sequence="10"/>
+
+    <menuitem id="menu_erpcloud_video_library_config"
+              name="Cấu hình"
+              parent="menu_erpcloud_video_library_root"
+              sequence="100"/>
+
+    <menuitem id="menu_erpcloud_video_library_category"
+              name="Danh mục"
+              parent="menu_erpcloud_video_library_config"
+              action="action_video_category"
+              sequence="10"/>
+
+    <menuitem id="menu_erpcloud_video_library_tag"
+              name="Tags"
+              parent="menu_erpcloud_video_library_config"
+              action="action_video_tag"
+              sequence="20"/>
+</odoo>

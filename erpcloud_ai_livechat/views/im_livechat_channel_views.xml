@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_im_livechat_channel_form_erpcloud_ai" model="ir.ui.view">
+        <field name="name">im_livechat.channel.form.erpcloud.ai</field>
+        <field name="model">im_livechat.channel</field>
+        <field name="inherit_id" ref="im_livechat.im_livechat_channel_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/notebook" position="inside">
+                <page string="ERPCloud AI">
+                    <group>
+                        <group string="Conversation settings">
+                            <field name="erpcloud_mode"/>
+                            <field name="erpcloud_bot_partner_id" invisible="erpcloud_mode == 'human'"/>
+                            <field name="erpcloud_handoff_keywords" invisible="erpcloud_mode == 'human'"/>
+                            <field name="erpcloud_max_auto_turns" invisible="erpcloud_mode == 'human'"/>
+                        </group>
+                        <group string="AI provider" invisible="erpcloud_mode == 'human'">
+                            <field name="erpcloud_ai_provider" required="erpcloud_mode == 'agent'"/>
+                            <field name="erpcloud_ai_api_key" password="True" required="erpcloud_mode == 'agent'"/>
+                            <field name="erpcloud_ai_api_base" invisible="erpcloud_ai_provider == 'gemini'"/>
+                            <field name="erpcloud_ai_model"/>
+                            <field name="erpcloud_ai_temperature"/>
+                        </group>
+                    </group>
+                    <group string="AI instructions" invisible="erpcloud_mode == 'human'">
+                        <field name="erpcloud_ai_system_prompt" nolabel="1" placeholder="Describe the assistant's role, tone and topics it may answer."/>
+                    </group>
+                    <div class="oe_edit_only" invisible="erpcloud_mode == 'human'">
+                        <p class="text-muted">Choose AI Agent, configure your provider and API key, then test with a staging chat before enabling this channel for visitors.</p>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

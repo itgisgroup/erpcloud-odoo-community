@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Blog Category List View -->
+    <record id="view_blog_category_list" model="ir.ui.view">
+        <field name="name">erpcloud.blog.category.list</field>
+        <field name="model">erpcloud.blog.category</field>
+        <field name="arch" type="xml">
+            <list string="Danh mục">
+                <field name="sequence" widget="handle"/>
+                <field name="name" string="Tên danh mục"/>
+                <field name="slug" string="URL Slug"/>
+                <field name="parent_id" string="Danh mục cha"/>
+                <field name="post_count" string="Số bài viết"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Blog Category Form View -->
+    <record id="view_blog_category_form" model="ir.ui.view">
+        <field name="name">erpcloud.blog.category.form</field>
+        <field name="model">erpcloud.blog.category</field>
+        <field name="arch" type="xml">
+            <form string="Danh mục">
+                <sheet>
+                    <field name="cover_image" widget="image" class="oe_avatar"/>
+
+                    <div class="oe_title">
+                        <label for="name" string="Tên danh mục"/>
+                        <h1>
+                            <field name="name" placeholder="Nhập tên danh mục..." required="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="slug" readonly="1"/>
+                            <field name="parent_id" options="{'no_create': True}"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="icon" placeholder="fa-folder"/>
+                            <field name="color" widget="color"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Mô tả" name="description">
+                            <field name="description" placeholder="Mô tả danh mục..."/>
+                        </page>
+                        <page string="SEO" name="seo">
+                            <group>
+                                <field name="seo_title" placeholder="Tiêu đề SEO (60 ký tự)"/>
+                                <field name="seo_description" placeholder="Mô tả SEO (160 ký tự)"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Blog Category Action -->
+    <record id="action_blog_category" model="ir.actions.act_window">
+        <field name="name">Danh mục</field>
+        <field name="res_model">erpcloud.blog.category</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tạo danh mục đầu tiên!
+            </p>
+            <p>
+                Danh mục giúp phân loại bài viết theo chủ đề.
+            </p>
+        </field>
+    </record>
+
+</odoo>

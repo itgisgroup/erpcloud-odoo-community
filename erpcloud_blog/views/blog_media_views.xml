@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Blog Media Kanban View -->
+    <record id="view_blog_media_kanban" model="ir.ui.view">
+        <field name="name">erpcloud.blog.media.kanban</field>
+        <field name="model">erpcloud.blog.media</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="file_type"/>
+                <field name="image"/>
+                <field name="thumbnail"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex flex-column">
+                            <div class="o_kanban_image" t-if="record.file_type.raw_value == 'image'">
+                                <img t-att-src="kanban_image('erpcloud.blog.media', 'thumbnail', record.id.raw_value)" alt="Media" class="o_image_64_cover"/>
+                            </div>
+                            <div class="o_kanban_image" t-if="record.file_type.raw_value != 'image'">
+                                <i class="fa fa-file-o fa-3x"/>
+                            </div>
+                            <div class="mt-2">
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                                <div class="text-muted">
+                                    <field name="file_type"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Blog Media Form View -->
+    <record id="view_blog_media_form" model="ir.ui.view">
+        <field name="name">erpcloud.blog.media.form</field>
+        <field name="model">erpcloud.blog.media</field>
+        <field name="arch" type="xml">
+            <form string="Media">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar" invisible="file_type != 'image'"/>
+
+                    <div class="oe_title">
+                        <label for="name" string="Tên file"/>
+                        <h1>
+                            <field name="name" placeholder="Nhập tên file..." required="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="file_type" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="folder" placeholder="Thư mục"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Hình ảnh" name="image" invisible="file_type != 'image'">
+                            <group>
+                                <field name="image" widget="image"/>
+                                <field name="alt_text" placeholder="Mô tả ảnh (SEO)"/>
+                                <field name="width" readonly="1"/>
+                                <field name="height" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Video" name="video" invisible="file_type != 'video'">
+                            <group>
+                                <field name="video_url" placeholder="https://youtube.com/watch?v=..."/>
+                                <field name="video_embed_code" placeholder="&lt;iframe...&gt;"/>
+                                <field name="duration"/>
+                            </group>
+                        </page>
+
+                        <page string="Tài liệu" name="document" invisible="file_type != 'document'">
+                            <group>
+                                <field name="url" placeholder="URL tài liệu"/>
+                                <field name="file_size"/>
+                            </group>
+                        </page>
+
+                        <page string="Mô tả" name="description">
+                            <field name="description" placeholder="Mô tả chi tiết..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Blog Media List View -->
+    <record id="view_blog_media_list" model="ir.ui.view">
+        <field name="name">erpcloud.blog.media.list</field>
+        <field name="model">erpcloud.blog.media</field>
+        <field name="arch" type="xml">
+            <list string="Thư viện Media">
+                <field name="name" string="Tên file"/>
+                <field name="file_type" string="Loại"/>
+                <field name="folder" string="Thư mục"/>
+                <field name="create_date" string="Ngày tạo"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Blog Media Search View -->
+    <record id="view_blog_media_search" model="ir.ui.view">
+        <field name="name">erpcloud.blog.media.search</field>
+        <field name="model">erpcloud.blog.media</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="folder"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Blog Media Action -->
+    <record id="action_blog_media" model="ir.actions.act_window">
+        <field name="name">Thư viện Media</field>
+        <field name="res_model">erpcloud.blog.media</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Tải lên file đầu tiên!
+            </p>
+            <p>
+                Quản lý hình ảnh, video, tài liệu cho blog.
+            </p>
+        </field>
+    </record>
+
+</odoo>

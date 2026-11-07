@@ -1,0 +1,3 @@
+id,name,model_id,group_id/id,operation,domain
+access_erpcloud_livechat_job_user,ERPCloud Livechat Job User,erpcloud.livechat.job,base.group_user,r,
+access_erpcloud_livechat_job_admin,ERPCloud Livechat Job Admin,erpcloud.livechat.job,base.group_system,crud,

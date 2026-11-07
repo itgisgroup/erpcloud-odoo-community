@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="video_snippets" inherit_id="website.snippets">
+        <xpath expr="//t[@id='installed_snippets_hook']" position="after">
+            <t t-snippet="erpcloud_video_library.s_video_library" t-thumbnail="/erpcloud_video_library/static/description/icon.png"/>
+        </xpath>
+    </template>
+</odoo>

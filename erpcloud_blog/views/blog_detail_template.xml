@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="blog_detail_template" name="ERPCloud Blog Article">
+    <t t-call="website.layout">
+      <t t-set="additional_title" t-value="post.name"/>
+      <div id="wrap" class="ec-blog-page ec-blog-detail">
+        <article class="container ec-blog-article">
+          <nav class="ec-blog-breadcrumb" aria-label="Breadcrumb"><a href="/blog">Blog</a><span>/</span><span><t t-out="post.category_id.name"/></span></nav>
+          <header class="ec-blog-article-header">
+            <span class="ec-blog-eyebrow"><t t-out="post.category_id.name"/></span>
+            <h1><t t-out="post.name"/></h1>
+            <p t-if="post.subtitle"><t t-out="post.subtitle"/></p>
+            <div class="ec-blog-byline"><span><t t-out="post.author_name or post.author_id.name"/></span><time t-if="post.published_date"><t t-out="post.published_date.strftime('%d %b %Y')"/></time></div>
+          </header>
+          <div t-if="post.cover_image" class="ec-blog-article-cover"><img t-att-src="'data:image/png;base64,' + post.cover_image.decode('utf-8')" t-att-alt="post.name"/></div>
+          <div class="ec-blog-prose" t-out="processed_content"/>
+          <div t-if="post.tag_ids" class="ec-blog-tags"><strong>Topics</strong><t t-foreach="post.tag_ids" t-as="tag"><a t-attf-href="/blog?tag=#{tag.slug}"><t t-out="tag.name"/></a></t></div>
+        </article>
+        <section t-if="related_posts" class="container ec-blog-related"><h2>More to read</h2><div class="ec-blog-grid"><t t-foreach="related_posts[:3]" t-as="related"><article class="ec-blog-card"><a t-attf-href="/blog/#{related.slug}"><div class="ec-blog-card-body"><span class="ec-blog-eyebrow"><t t-out="related.category_id.name"/></span><h3><t t-out="related.name"/></h3><p><t t-out="related.excerpt or ''"/></p><strong>Read article →</strong></div></a></article></t></div></section>
+        <section t-if="post.allow_comments" class="container ec-blog-comments">
+          <h2>Comments <span><t t-out="len(comments)"/></span></h2>
+          <p>Comments appear after review.</p>
+          <div t-foreach="comments" t-as="comment" class="ec-blog-comment"><strong><t t-out="comment.author_name"/></strong><p><t t-out="comment.content"/></p></div>
+          <form action="/blog/comment/submit" method="post" class="ec-blog-comment-form">
+            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+            <input type="hidden" name="post_id" t-att-value="post.id"/>
+            <label>Name<input name="name" required="required" maxlength="100"/></label>
+            <label>Email<input name="email" type="email" required="required" maxlength="255"/></label>
+            <label>Comment<textarea name="content" required="required" maxlength="5000" rows="4"/></label>
+            <button type="submit">Submit for review</button>
+          </form>
+        </section>
+      </div>
+    </t>
+  </template>
+</odoo>

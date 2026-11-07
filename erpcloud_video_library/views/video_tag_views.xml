@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Moved content to video_category_views.xml for now, or keep separate if preferred -->
+    <!-- I will keep it empty and move the Tag records here as per manifest -->
+</odoo>
