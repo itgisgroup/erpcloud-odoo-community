@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="action_mcp_center" model="ir.actions.client">
+    <field name="name">MCP Center</field>
+    <field name="tag">erpcloud_mcp_center.main</field>
+    <field name="target">fullscreen</field>
+  </record>
+  <menuitem id="menu_mcp_center_root" name="MCP Center" action="action_mcp_center"
+            groups="base.group_user" sequence="30" web_icon="erpcloud_mcp_center,static/description/icon.png"/>
+</odoo>

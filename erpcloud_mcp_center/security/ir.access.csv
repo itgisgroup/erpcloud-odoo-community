@@ -1,0 +1,12 @@
+id,name,model_id,group_id/id,operation,domain
+access_mcp_center_key_user,MCP key own read,erpcloud.mcp.center.key,base.group_user,r,"[('user_id', '=', user.id), ('company_id', 'in', company_ids)]"
+access_mcp_center_key_manager,MCP key manager,erpcloud.mcp.center.key,erpcloud_mcp_center.group_mcp_center_manager,crud,"[('company_id', 'in', company_ids)]"
+access_mcp_center_proposal_user,MCP proposal own read,erpcloud.mcp.center.proposal,base.group_user,r,"[('requester_id', '=', user.id), ('company_id', 'in', company_ids)]"
+access_mcp_center_proposal_approver,MCP proposal approver,erpcloud.mcp.center.proposal,erpcloud_mcp_center.group_mcp_center_approver,ru,"[('company_id', 'in', company_ids)]"
+access_mcp_center_proposal_manager,MCP proposal manager,erpcloud.mcp.center.proposal,erpcloud_mcp_center.group_mcp_center_manager,crud,"[('company_id', 'in', company_ids)]"
+access_mcp_center_audit_manager,MCP audit manager,erpcloud.mcp.center.audit,erpcloud_mcp_center.group_mcp_center_manager,r,"[('company_id', 'in', company_ids)]"
+access_mcp_center_session_manager,MCP session manager,erpcloud.mcp.center.session,erpcloud_mcp_center.group_mcp_center_manager,r,"[('company_id', 'in', company_ids)]"
+access_mcp_center_oauth_client_manager,MCP OAuth client manager,erpcloud.mcp.center.oauth.client,erpcloud_mcp_center.group_mcp_center_manager,r,
+access_mcp_center_oauth_code_manager,MCP OAuth code manager,erpcloud.mcp.center.oauth.code,erpcloud_mcp_center.group_mcp_center_manager,r,
+access_mcp_center_oauth_access_manager,MCP OAuth access manager,erpcloud.mcp.center.oauth.access.token,erpcloud_mcp_center.group_mcp_center_manager,r,
+access_mcp_center_oauth_refresh_manager,MCP OAuth refresh manager,erpcloud.mcp.center.oauth.refresh.token,erpcloud_mcp_center.group_mcp_center_manager,r,
