@@ -1,7 +1,7 @@
 {
     'name': 'Sales Commission Ledger',
     'summary': 'Auditable sales commission from posted customer invoices',
-    'version': '20.0.1.0.0',
+    'version': '20.0.1.0.1',
     'category': 'Sales',
     'author': 'ERPCloud',
     'website': 'https://erpcloud.vn',

@@ -1,6 +1,6 @@
 # Hướng dẫn sử dụng — Sổ hoa hồng bán hàng
 
-Phiên bản 20.0.1.0.0 · Odoo 20 Community · Miễn phí · LGPL-3.
+Phiên bản 20.0.1.0.1 · Odoo 20 Community · Miễn phí · LGPL-3.
 
 ## 1. Cài đặt
 

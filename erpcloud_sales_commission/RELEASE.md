@@ -1,6 +1,8 @@
-# Release record — Sales Commission Ledger 20.0.1.0.0
+# Release record — Sales Commission Ledger 20.0.1.0.1
 
 Date: 2026-11-07. Publisher: ERPCloud (`info@erpcloud.vn`). Edition: Odoo 20 Community. License: LGPL-3. Price: Free. Dependencies: Odoo `sale` and `account`, plus `xlsxwriter` from standard Odoo 20 Python requirements.
+
+Visual update: the marketplace cover now explains the tested 900 × 5% = 45, linked refund −10 and net 35 in large type. The 400 px thumbnail was inspected. Functional code remains the tested 20.0.1.0.0 implementation.
 
 ## Product boundary
 
@@ -13,6 +15,7 @@ Invoice line subtotal after discount and before tax; one salesperson per sale so
 - Real 10,000-line invoice: 10,000 ledger entries; create 89.07 s, post/sync 20.36 s, report dataset 0.11 s, XLSX 0.56 s. Evidence: `reports/erpcloud_sales_commission-10k.log`.
 - Real browser screenshots at 1440 px and 390 px, no mobile horizontal overflow. Separate English and Vietnamese sample data. Media folder includes actual UI WebM, PDF (`%PDF-1.4`, 37,395 bytes) and XLSX (6,646 bytes) exported from the module.
 - Installation and uninstall from a ZIP on a disposable clean CE database succeeded.
+- The 20.0.1.0.1 ZIP upgraded the disposable CE database; `ir_module_module.latest_version` read back `20.0.1.0.1`. The ZIP cover SHA256 matches the source cover SHA256.
 
 ## Publication gate
 
