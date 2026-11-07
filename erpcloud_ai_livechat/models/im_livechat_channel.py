@@ -50,7 +50,7 @@ class ImLivechatChannel(models.Model):
 
     erpcloud_ai_system_prompt = fields.Text(
         string='System Prompt',
-        default='Bạn là trợ lý AI thông minh hỗ trợ khách hàng của ERPCloud. Hãy trả lời ngắn gọn, lịch sự và giải đáp chính xác thắc mắc của khách hàng.',
+        default='You are a helpful customer support assistant. Answer clearly and concisely using the information supplied by the organization. If unsure, say so and offer human help.',
         help='System instructions that guide the AI tone and answers.',
     )
 
@@ -62,7 +62,7 @@ class ImLivechatChannel(models.Model):
 
     erpcloud_handoff_keywords = fields.Char(
         string='Handoff Keywords',
-        default='gặp người, nhân viên, tư vấn viên, gặp tư vấn viên, hỗ trợ người',
+        default='human, agent, support, nhân viên, gặp người',
         help="Comma-separated keywords that trigger handoff to human.",
     )
 
