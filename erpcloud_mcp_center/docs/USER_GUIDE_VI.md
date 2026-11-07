@@ -23,11 +23,11 @@ Không có thao tác gửi báo giá hoặc xác nhận đơn tự động.
 ## Phân quyền và xử lý lỗi
 
 Người dùng cần quyền Odoo chuẩn để xem/tạo báo giá. Nhóm **MCP Center Manager** cấp khóa đề xuất; nhóm **MCP Center Approver** duyệt. Trong tab **Hoạt động**, sao chép mã truy vết khi liên hệ `info@erpcloud.vn`. Không gửi khóa cá nhân qua email hoặc chat hỗ trợ.
-# Quyền theo model trong bản 20.0.1.1.0
+# Quyền theo model
 
 Trước khi tạo khóa, chọn dữ liệu Odoo và tiện ích được phép dùng: tra cứu khách hàng, tra cứu sản phẩm, xem tóm tắt báo giá. Quản trị viên có thể cấp thêm quyền đề xuất báo giá trong phạm vi báo giá; mỗi đề xuất vẫn cần người phụ trách duyệt. Tiện ích không được chọn sẽ không xuất hiện trong danh sách MCP và bị từ chối nếu gọi trực tiếp. Muốn đổi quyền của khóa cũ, hãy ngắt khóa đó rồi tạo khóa mới. Nút góc trên trái đóng hoặc mở sidebar trên desktop.
 # Cấp quyền động theo model Odoo
 
-Trong **Kết nối AI**, tìm model đã cài bằng tên hoặc mã kỹ thuật. Chọn **Xem** cho từng model; người quản lý MCP Center có thể chọn phạm vi **Xem + thêm/sửa/xóa model đã chọn** và cấp riêng quyền **Thêm**, **Sửa**, **Xóa**. Token không vượt qua ACL hay record rule của người sở hữu trong Odoo. Chỉ chọn model và thao tác trợ lý cần dùng; muốn đổi quyền thì ngắt token cũ và tạo token mới.
+Trong **Kết nối AI → Model Odoo được cấp quyền**, tìm model đã cài bằng tên hoặc mã kỹ thuật. Bốn thao tác **Xem**, **Thêm**, **Sửa**, **Xóa** luôn hiện. Mặc định chỉ có Xem để tránh cấp quyền ghi ngoài ý muốn. Người quản lý MCP Center bấm **Bật quyền ghi**, rồi đánh dấu riêng những thao tác thật sự cần cho từng model. Nếu một thao tác vẫn mờ, tài khoản Odoo hiện tại chưa có quyền đó trên model. Token không vượt qua ACL hay record rule của người sở hữu trong Odoo. Muốn đổi quyền của khóa đã tạo, ngắt khóa cũ và tạo khóa mới.
 
 Các công cụ MCP tổng quát gồm `list_models`, `get_fields`, `search_records`, `get_record`, `create_record`, `update_record`, `delete_record`. Khi ghi dữ liệu, dùng `request_key` ổn định để thử lại không tạo thao tác trùng. Xóa cần xác nhận đúng chuỗi `DELETE <model> <id>` và là thao tác vĩnh viễn. Công cụ không cho gọi phương thức model tùy ý hoặc SQL; trường bí mật, nhị phân và quan hệ danh sách không được mở. Client OAuth phải được duyệt phạm vi **write** cho công cụ ghi. Khi cần hỗ trợ, gửi mã truy vết trong Hoạt động.

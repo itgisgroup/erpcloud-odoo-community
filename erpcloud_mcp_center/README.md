@@ -14,7 +14,7 @@ No ERPCloud private addon is required. Installation adds no sample customer or p
 
 1. Copy `erpcloud_mcp_center` into an Odoo addons path.
 2. Refresh Apps and install **ERPCloud MCP Center**.
-3. Open the **MCP Center** root menu. The initial key scope is read only.
+3. Open the **MCP Center** root menu. The initial key scope is read only. In **Connect AI → Odoo model access**, all four operations are visible; an MCP Center manager can click **Enable write scope** to select Create, Update and Delete separately.
 4. A system administrator or **MCP Center Manager** may issue a quote proposal key. Assign **MCP Center Approver** to users allowed to approve proposals.
 5. Set `web.base.url` to the actual HTTPS origin. If an AI client is hosted elsewhere, ensure it can reach `https://your-odoo/mcp`.
 

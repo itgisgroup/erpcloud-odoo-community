@@ -6,11 +6,11 @@ The sales briefing reads draft and sent quotations within the owner's Odoo right
 
 For support, send a trace ID from **Activity** to `info@erpcloud.vn`. Never send your key.
 
-# Permissions in version 20.0.1.1.0
+# Connection permissions
 
 Before creating a key, select the Odoo models and workflows it may use: customer lookup, product lookup and sales quotation briefing. A Manager can also enable quotation proposals with the quote scope; an approver must still review every proposal. An unselected workflow is absent from the MCP tool list and rejected if called directly. To change a key's rights, revoke it and create a new key. The desktop menu can be collapsed and expanded with the button at the top left.
 # Dynamic Odoo model access
 
-In **Connect AI**, search any installed persistent Odoo model by label or technical name. Select **Read** for individual models. An MCP Center manager can choose the **Selected model CRUD** scope and grant **Create**, **Update**, or **Delete** per model. A token never overrides the owner's Odoo access rights or record rules. Select only the models and operations a particular assistant needs; revoke and reissue a token to change its grants.
+In **Connect AI → Odoo model access**, search any installed persistent Odoo model by label or technical name. Read, Create, Update and Delete are always visible. The default scope permits Read only. An MCP Center manager can click **Enable write scope**, then select Create, Update or Delete separately for each model. An operation stays disabled if the Odoo user lacks that model right. A token never overrides the owner's Odoo access rights or record rules. Select only the operations a particular assistant needs; revoke and reissue a token to change its grants.
 
 Generic MCP tools are `list_models`, `get_fields`, `search_records`, `get_record`, `create_record`, `update_record`, and `delete_record`. For writes, use a stable `request_key` so a client retry cannot duplicate the action. Deletion requires the exact confirmation text `DELETE <model> <id>` and is permanent. The generic tools do not call arbitrary model methods or accept SQL. Some fields (secrets, binary and collection relations) are deliberately unavailable. OAuth clients need explicit **write** consent for write tools. Use the Activity trace ID when asking for support.

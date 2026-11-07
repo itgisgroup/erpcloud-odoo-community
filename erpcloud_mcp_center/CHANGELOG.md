@@ -1,5 +1,10 @@
 # Changelog
 
+## 20.0.1.2.1 — 2026-11-07
+
+- Show all four model operations in the permission card. Read-only remains the default; an MCP Center manager can enable write scope directly from that card before selecting Create, Update or Delete.
+- Refresh marketplace screenshots from the public HTTPS QA build.
+
 ## 20.0.1.2.0 — 2026-11-07
 
 - Searchable catalog of installed persistent Odoo models, with per-token read/create/update/delete grants.

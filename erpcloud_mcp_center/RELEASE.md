@@ -1,4 +1,4 @@
-# ERPCloud MCP Center — release 20.0.1.2.0
+# ERPCloud MCP Center — release 20.0.1.2.1
 
 ## Delivered
 
@@ -9,15 +9,17 @@
 - Collapsible desktop sidebar and per-connection grants for three core Odoo models and four curated operations; ungranted tools are hidden and direct calls are denied.
 - Dynamic catalog of installed persistent Odoo models, with per-token read/create/update/delete grants, bounded generic tools and an OAuth consent selector showing the chosen connection's model grants. Generic writes have idempotency keys; delete requires an exact model/record confirmation.
 - Cohesive original SVG navigation icons, a refined dark sidebar, consistent card styling and a mobile layout checked for text overlap and horizontal overflow.
+- The model access card now always shows Read/Create/Update/Delete. The safe default remains read-only; managers can enable write scope in that card, after which each operation is still selected separately and checked against Odoo ACLs.
 - Odoo 20 Community dependencies: `base`, `web`, `sale`. LGPL-3. No ERPCloud private addon and no sample business records on normal install.
 
 ## Verification evidence
 
-The release gate is a fresh Odoo 20 Community database test via `tools/test-module.ps1`. Its log is `../reports/erpcloud_mcp_center-test.log` in the workspace; the latest clean run on 2026-11-07 after the visual redesign recorded **14 tests, 0 failed, 0 errors**. The suite covers key scope/revocation, dynamic model CRUD and idempotency, model permission filtering, direct-call denial, protocol lifecycle, quotation approval/rejection/idempotency, price drift, cross-user and cross-company denial.
+The release gate is a fresh Odoo 20 Community database test via `tools/test-module.ps1`. Its log is `../reports/erpcloud_mcp_center-test.log` in the workspace; the latest clean run on 2026-11-07 for 20.0.1.2.1 recorded **14 tests, 0 failed, 0 errors**. The suite covers key scope/revocation, dynamic model CRUD and idempotency, model permission filtering, direct-call denial, protocol lifecycle, quotation approval/rejection/idempotency, price drift, cross-user and cross-company denial.
 
 The disposable browser QA database was tested locally and again through `https://mcp.erpcloud.vn` after its public HTTPS route was configured. Evidence in the workspace reports:
 
-- `reports/mcp_center_upgrade_qa.log`: separate fresh install followed by immediate module upgrade on Odoo 20 CE for the previous version; the existing local UI database was upgraded from 20.0.1.1.0 to 20.0.1.2.0 successfully.
+- `reports/mcp_center_upgrade_qa.log`: separate fresh install followed by immediate module upgrade on Odoo 20 CE for the previous version. The public QA database was subsequently upgraded to 20.0.1.2.1 and verified through the browser.
+- `reports/mcp_center_model_scope_ui_qa.json`: on public HTTPS, all four operations visible in read-only mode; write operations disabled initially; manager switch enables Odoo-authorized operations; a write-scope key retained selected Read/Create/Update grants and was revoked; 1440px desktop and 360px mobile have no overflow or browser errors.
 - `reports/mcp_center_browser_qa.json`: desktop VI/EN UI, one-time key reveal, same-origin HTTPS connection test, 360px mobile width, no browser errors.
 - `reports/mcp_center_ui_layout_qa.json`: 360px, 768px and 1440px icon loading, six desktop menu icons, no horizontal overflow, no step-icon/text overlap and no browser errors after the redesign. `reports/mcp_center_ui_mobile_steps.png` records the mobile steps.
 - `reports/mcp_center_permission_qa.json`: 242px/72px sidebar open/closed and persistence, restricted tool discovery, direct-call denial, grant-preserving rotation and revoked old key.
