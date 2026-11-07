@@ -15,17 +15,17 @@
 
 The release gate is a fresh Odoo 20 Community database test via `tools/test-module.ps1`. Its log is `../reports/erpcloud_mcp_center-test.log` in the workspace; the latest clean run on 2026-11-07 after the visual redesign recorded **14 tests, 0 failed, 0 errors**. The suite covers key scope/revocation, dynamic model CRUD and idempotency, model permission filtering, direct-call denial, protocol lifecycle, quotation approval/rejection/idempotency, price drift, cross-user and cross-company denial.
 
-The disposable local browser QA database was tested at `http://127.0.0.1:18032`. Evidence in the workspace reports:
+The disposable browser QA database was tested locally and again through `https://mcp.erpcloud.vn` after its public HTTPS route was configured. Evidence in the workspace reports:
 
 - `reports/mcp_center_upgrade_qa.log`: separate fresh install followed by immediate module upgrade on Odoo 20 CE for the previous version; the existing local UI database was upgraded from 20.0.1.1.0 to 20.0.1.2.0 successfully.
-- `reports/mcp_center_browser_qa.json`: desktop VI/EN UI, one-time key reveal, local connection test, 360px mobile width, no browser errors.
+- `reports/mcp_center_browser_qa.json`: desktop VI/EN UI, one-time key reveal, same-origin HTTPS connection test, 360px mobile width, no browser errors.
 - `reports/mcp_center_ui_layout_qa.json`: 360px, 768px and 1440px icon loading, six desktop menu icons, no horizontal overflow, no step-icon/text overlap and no browser errors after the redesign. `reports/mcp_center_ui_mobile_steps.png` records the mobile steps.
 - `reports/mcp_center_permission_qa.json`: 242px/72px sidebar open/closed and persistence, restricted tool discovery, direct-call denial, grant-preserving rotation and revoked old key.
 - `reports/mcp_center_oauth_qa.json`: OAuth discovery, dynamic registration, consent, token, refresh and refresh-token reuse denial; unauthenticated and foreign-origin requests denied.
 - `reports/mcp_center_quote_qa.json`: customer/product lookup, quotation proposal idempotency, pending approval, approved draft, source link.
 - `reports/mcp_center_dynamic_qa.json`: dynamic model selection, read/create/update/delete via MCP, idempotent retry, cross-model denial and browser errors.
 - `reports/mcp_center_oauth_write_qa.json`: OAuth write consent displayed model grants and permitted the selected token's create/delete tools.
-- `static/description/screenshot_*.png`: real screenshots from the local QA build. The marketing cover is composed from a real screenshot.
+- `static/description/screenshot_*.png`: real screenshots from the QA build. The overview, connection and mobile screenshots were refreshed through public HTTPS after the original local-address warning was resolved. The marketing cover is composed from a real screenshot.
 
 ## Deployment and limits
 
