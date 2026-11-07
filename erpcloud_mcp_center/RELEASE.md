@@ -29,6 +29,6 @@ The disposable local browser QA database was tested at `http://127.0.0.1:18032`.
 
 ## Deployment and limits
 
-Set a public HTTPS `web.base.url` and proxy route to `/mcp` before remote client use. Local self-test proves only Odoo-side protocol and tool discovery. A live ChatGPT/Claude connector test requires an externally reachable HTTPS Odoo instance and the relevant client account; this is a separate customer rollout gate. OAuth client behavior may vary by host. Generic CRUD is limited to explicitly granted persistent models and the Odoo user's normal rights; it never runs arbitrary model methods or SQL. Quotation proposals still require human approval. The intended `mcp.erpcloud.vn` hostname currently returns Cloudflare 526 and is not a valid remote UAT endpoint.
+Set a public HTTPS `web.base.url` and proxy route to `/mcp` before remote client use. Local self-test proves only Odoo-side protocol and tool discovery. The disposable staging endpoint `https://mcp.erpcloud.vn/mcp` passed public OAuth/PKCE and MCP CRUD simulation on 2026-11-07; its tunnel runs on the QA workstation and is not a production availability guarantee. A live ChatGPT/Claude connector test still requires the relevant signed-in client account and remains a separate customer rollout gate. OAuth client behavior may vary by host. Generic CRUD is limited to explicitly granted persistent models and the Odoo user's normal rights; it never runs arbitrary model methods or SQL. Quotation proposals still require human approval.
 
 Support: info@erpcloud.vn.
