@@ -22,7 +22,7 @@ export class MCPCenter extends Component {
         this.state = proxy({
             tab: "home", loading: true, busy: false, data: null, secret: "", secretVisible: false,
             language: localStorage.getItem("erpcloud_mcp_center_lang") || "vi", platform: "claude",
-            keyName: "Trợ lý của tôi", scope: "read", days: 30,
+            keyName: localStorage.getItem("erpcloud_mcp_center_lang") === "en" ? "My assistant" : "Trợ lý của tôi", scope: "read", days: 30,
             partnerQuery: "", productQuery: "", partners: [], products: [], partner: null,
             lineProduct: null, quantity: 1, lines: [], note: "", chosenKey: null, selfTest: "",
         });
@@ -41,6 +41,9 @@ export class MCPCenter extends Component {
     setTab(tab) { this.state.tab = tab; this.state.secret = ""; this.state.secretVisible = false; }
     setLanguage() {
         this.state.language = this.state.language === "vi" ? "en" : "vi";
+        if (this.state.keyName === "Trợ lý của tôi" || this.state.keyName === "My assistant") {
+            this.state.keyName = this.state.language === "vi" ? "Trợ lý của tôi" : "My assistant";
+        }
         localStorage.setItem("erpcloud_mcp_center_lang", this.state.language);
     }
     async copy(value) {

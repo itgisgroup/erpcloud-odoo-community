@@ -10,9 +10,9 @@
     "license": "LGPL-3",
     "images": [
         "static/description/cover.png",
-        "static/description/screenshot_connect.png",
-        "static/description/screenshot_approval.png",
-        "static/description/screenshot_mobile.png",
+        "static/description/screenshot_connect_en.png",
+        "static/description/screenshot_approval_en.png",
+        "static/description/screenshot_mobile_en.png",
     ],
     "depends": ["base", "web", "sale"],
     "data": [

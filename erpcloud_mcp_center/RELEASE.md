@@ -14,6 +14,8 @@ The release gate is a fresh Odoo 20 Community database test via `tools/test-modu
 
 The disposable local browser QA database was tested at `http://127.0.0.1:18032`. Evidence in the workspace reports:
 
+- `reports/mcp_center_upgrade_qa.log`: separate fresh install followed by immediate module upgrade on Odoo 20 CE.
+
 - `reports/mcp_center_browser_qa.json`: desktop VI/EN UI, one-time key reveal, local connection test, 360px mobile width, no browser errors.
 - `reports/mcp_center_oauth_qa.json`: OAuth discovery, dynamic registration, consent, token, refresh and refresh-token reuse denial; unauthenticated and foreign-origin requests denied.
 - `reports/mcp_center_quote_qa.json`: customer/product lookup, quotation proposal idempotency, pending approval, approved draft, source link.
