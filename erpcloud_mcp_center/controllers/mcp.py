@@ -105,6 +105,43 @@ def _tools(key, oauth_write):
         "customer_lookup": key.permits("res.partner", "lookup"),
         "product_lookup": key.permits("product.product", "lookup"),
     }.get(tool["name"], False)]
+    grants = key._permissions()
+    if any("read" in ops for ops in grants.values()):
+        tools.extend([
+            {"name": "list_models", "description": "List Odoo models explicitly granted to this connection and their allowed operations.",
+             "inputSchema": {"type": "object", "properties": {}, "additionalProperties": False},
+             "annotations": {"readOnlyHint": True, "destructiveHint": False}},
+            {"name": "get_fields", "description": "List readable fields for one granted Odoo model. Sensitive and binary fields are excluded.",
+             "inputSchema": {"type": "object", "properties": {"model": {"type": "string"}}, "required": ["model"], "additionalProperties": False},
+             "annotations": {"readOnlyHint": True, "destructiveHint": False}},
+            {"name": "search_records", "description": "Search granted Odoo model records by display name. Returns source links and limited selected fields.",
+             "inputSchema": {"type": "object", "properties": {"model": {"type": "string"}, "query": {"type": "string"},
+                 "fields": {"type": "array", "items": {"type": "string"}, "maxItems": 20}, "limit": {"type": "integer", "minimum": 1, "maximum": 20}},
+                 "required": ["model"], "additionalProperties": False},
+             "annotations": {"readOnlyHint": True, "destructiveHint": False}},
+            {"name": "get_record", "description": "Read one record of a granted Odoo model and return its source link.",
+             "inputSchema": {"type": "object", "properties": {"model": {"type": "string"}, "id": {"type": "integer", "minimum": 1},
+                 "fields": {"type": "array", "items": {"type": "string"}, "maxItems": 20}},
+                 "required": ["model", "id"], "additionalProperties": False},
+             "annotations": {"readOnlyHint": True, "destructiveHint": False}},
+        ])
+    if oauth_write:
+        schema = {"model": {"type": "string"}, "request_key": {"type": "string", "minLength": 8, "maxLength": 128}}
+        if any("create" in ops for ops in grants.values()):
+            tools.append({"name": "create_record", "description": "Create one record in a specifically granted model. Use a stable request_key so retries do not duplicate it.",
+                          "inputSchema": {"type": "object", "properties": {**schema, "values": {"type": "object"}},
+                                          "required": ["model", "values", "request_key"], "additionalProperties": False},
+                          "annotations": {"readOnlyHint": False, "destructiveHint": False}})
+        if any("write" in ops for ops in grants.values()):
+            tools.append({"name": "update_record", "description": "Update one record in a specifically granted model. Use a stable request_key for safe retry.",
+                          "inputSchema": {"type": "object", "properties": {**schema, "id": {"type": "integer", "minimum": 1}, "values": {"type": "object"}},
+                                          "required": ["model", "id", "values", "request_key"], "additionalProperties": False},
+                          "annotations": {"readOnlyHint": False, "destructiveHint": False}})
+        if any("unlink" in ops for ops in grants.values()):
+            tools.append({"name": "delete_record", "description": "Permanently delete one record in a specifically granted model. Requires exact confirmation DELETE <model> <id> and a stable request_key.",
+                          "inputSchema": {"type": "object", "properties": {**schema, "id": {"type": "integer", "minimum": 1}, "confirm": {"type": "string"}},
+                                          "required": ["model", "id", "confirm", "request_key"], "additionalProperties": False},
+                          "annotations": {"readOnlyHint": False, "destructiveHint": True}})
     if key.scope == "quote" and oauth_write and key.permits("sale.order", "propose"):
         tools.append({
             "name": "quotation_propose",
@@ -199,6 +236,40 @@ class MCPController(http.Controller):
                     result = _lookup(key, arguments, "res.partner")
                 elif name == "product_lookup":
                     result = _lookup(key, arguments, "product.product")
+                elif name in {"list_models", "get_fields", "search_records", "get_record", "create_record", "update_record", "delete_record"}:
+                    if not isinstance(arguments, dict):
+                        raise ValidationError("Tool arguments must be an object.")
+                    allowed_arguments = {
+                        "list_models": set(), "get_fields": {"model"},
+                        "search_records": {"model", "query", "fields", "limit"},
+                        "get_record": {"model", "id", "fields"},
+                        "create_record": {"model", "values", "request_key"},
+                        "update_record": {"model", "id", "values", "request_key"},
+                        "delete_record": {"model", "id", "confirm", "request_key"},
+                    }
+                    if set(arguments) - allowed_arguments[name] or name not in {tool["name"] for tool in _tools(key, oauth_write)}:
+                        raise AccessError("Tool or arguments not allowed for this connection.")
+                    gateway = request.env["erpcloud.mcp.center.gateway"]
+                    model_name = arguments.get("model")
+                    if name == "list_models":
+                        result = {"models": [{"model": model, "operations": ops} for model, ops in key._permissions().items() if "read" in ops]}
+                    elif name == "get_fields":
+                        result = gateway.list_fields(key, model_name)
+                    elif name == "search_records":
+                        result = gateway.search_records(key, model_name, arguments.get("query", ""), arguments.get("fields"), arguments.get("limit", 10))
+                    elif name == "get_record":
+                        result = gateway.get_record(key, model_name, arguments.get("id"), arguments.get("fields"))
+                    else:
+                        if not oauth_write:
+                            raise AccessError("OAuth write consent is required.")
+                        target_model = model_name
+                        if name == "create_record":
+                            result = gateway.create_record(key, model_name, arguments.get("values"), arguments.get("request_key"))
+                        elif name == "update_record":
+                            result = gateway.update_record(key, model_name, arguments.get("id"), arguments.get("values"), arguments.get("request_key"))
+                        else:
+                            result = gateway.delete_record(key, model_name, arguments.get("id"), arguments.get("confirm"), arguments.get("request_key"))
+                        target_id = result.get("id", 0)
                 elif name == "quotation_propose" and key.scope == "quote" and oauth_write and key.permits("sale.order", "propose"):
                     if not isinstance(arguments, dict) or set(arguments) - {"partner_id", "lines", "note", "request_key"}:
                         raise ValidationError("Tham số báo giá không hợp lệ.")

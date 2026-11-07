@@ -1,5 +1,12 @@
 # Changelog
 
+## 20.0.1.2.0 — 2026-11-07
+
+- Searchable catalog of installed persistent Odoo models, with per-token read/create/update/delete grants.
+- Generic model tools use Odoo ACLs and record rules, bounded safe fields, company isolation and idempotent write request keys.
+- OAuth consent now shows the connection and model grants to select before authorization.
+- Refined MCP Center navigation with a cohesive original SVG icon set, dark collapsible sidebar, clearer cards and mobile layout.
+
 ## 20.0.1.1.0 — 2026-11-07
 
 - Collapsible desktop sidebar with a remembered preference.

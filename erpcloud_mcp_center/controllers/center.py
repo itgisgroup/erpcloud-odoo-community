@@ -70,6 +70,10 @@ class MCPCenterController(http.Controller):
         )
         return {"key": _key_payload(record), "secret": secret}
 
+    @http.route("/erpcloud_mcp_center/models_catalog", type="jsonrpc", auth="user")
+    def models_catalog(self, query=""):
+        return request.env["erpcloud.mcp.center.gateway"].catalog(query=query)
+
     @http.route("/erpcloud_mcp_center/revoke", type="jsonrpc", auth="user")
     def revoke(self, key_id):
         key = request.env["erpcloud.mcp.center.key"].sudo().browse(int(key_id)).exists()
@@ -85,8 +89,8 @@ class MCPCenterController(http.Controller):
             raise AccessError("Kết nối không còn hiệu lực.")
         if key.user_id != request.env.user and not _manager():
             raise AccessError("Bạn chỉ có thể đổi khóa của mình.")
-        if key.scope == "quote" and not _manager():
-            raise AccessError("Quản trị viên phải đổi khóa tạo báo giá.")
+        if key.scope in ("quote", "write") and not _manager():
+            raise AccessError("Quản trị viên phải đổi khóa có quyền ghi dữ liệu.")
         created, secret = request.env["erpcloud.mcp.center.key"].issue(
             key.name + " (mới)", user_id=key.user_id.id,
             company_id=key.company_id.id, scope=key.scope, days=30,

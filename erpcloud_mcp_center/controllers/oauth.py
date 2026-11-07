@@ -63,7 +63,11 @@ def _issue_tokens(key, client, scope, family=None):
             "refresh_token": refresh, "scope": scope}
 
 
-def _consent_html(client_name, scopes, hidden, csrf_token):
+def _consent_html(client_name, scopes, hidden, csrf_token, keys):
+    options = "".join("<option value='%s'>%s — %s</option>" % (
+        key.id, escape(key.name), escape(", ".join(
+            "%s: %s" % (model, "/".join(operations))
+            for model, operations in key._permissions().items())[:220])) for key in keys)
     return ("<!doctype html><html lang='en'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
             "<title>ERPCloud MCP | Authorize</title><style>"
             "*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#f3f8f6;color:#17332f;font:15px system-ui,sans-serif}"
@@ -73,9 +77,9 @@ def _consent_html(client_name, scopes, hidden, csrf_token):
             "button{width:100%%;border:0;border-radius:9px;background:#0a7159;color:white;padding:13px;font:700 14px system-ui;cursor:pointer}small{display:block;margin-top:16px;color:#8a9991;line-height:1.5}"
             "</style><main><header><b>✦</b> ERPCloud MCP Center</header><h1>Authorize AI connection</h1>"
             "<p><strong>%s</strong> is requesting access to your Odoo account.</p><div class='scope'>Requested scope: <strong>%s</strong></div>"
-            "<form method='post'>%s<input type='hidden' name='csrf_token' value='%s'><button type='submit'>Allow connection</button></form>"
+            "<form method='post'>%s<label for='key_id'>Connection and model grants</label><select id='key_id' name='key_id' style='display:block;width:100%%;padding:10px;margin:8px 0 20px;border:1px solid #d9e7e0;border-radius:8px'>%s</select><input type='hidden' name='csrf_token' value='%s'><button type='submit'>Allow connection</button></form>"
             "<small>Your Odoo permissions and the selected connection scope still apply. You can revoke the key in MCP Center.</small>"
-            "</main></html>" % (escape(client_name), escape(scopes), hidden, escape(csrf_token)))
+            "</main></html>" % (escape(client_name), escape(scopes), hidden, options, escape(csrf_token)))
 
 
 class MCPOAuthController(http.Controller):
@@ -146,14 +150,21 @@ class MCPOAuthController(http.Controller):
             ("active", "=", True), ("expires_at", ">", fields.Datetime.now()),
         ]
         if "write" in scopes:
-            key_domain.append(("scope", "=", "quote"))
-        key = request.env["erpcloud.mcp.center.key"].sudo().search(key_domain, order="id desc", limit=1)
-        if not key:
+            key_domain.append(("scope", "in", ["quote", "write"]))
+        keys = request.env["erpcloud.mcp.center.key"].sudo().search(key_domain, order="id desc", limit=30)
+        if not keys:
             return request.make_response("No compatible ERPCloud MCP grant is assigned to this user.", status=403)
         if request.httprequest.method == "GET":
             hidden = "".join('<input type="hidden" name="%s" value="%s">' % (escape(name), escape(str(p.get(name) or ""))) for name in ("client_id", "redirect_uri", "response_type", "code_challenge", "code_challenge_method", "scope", "state", "resource"))
-            html = _consent_html(client.name, " ".join(sorted(scopes)), hidden, request.csrf_token())
+            html = _consent_html(client.name, " ".join(sorted(scopes)), hidden, request.csrf_token(), keys)
             return request.make_response(html, headers=[("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "no-store")])
+        try:
+            selected_key_id = int(p.get("key_id") or 0)
+        except (TypeError, ValueError):
+            selected_key_id = 0
+        key = keys.filtered(lambda row: row.id == selected_key_id)[:1]
+        if not key:
+            return request.make_response("Select an authorized MCP connection.", status=403)
         raw_code = secrets.token_urlsafe(48)
         request.env["erpcloud.mcp.center.oauth.code"].sudo().create({
             "code_hash": oauth_hash(raw_code), "client_id": client.id, "key_id": key.id,

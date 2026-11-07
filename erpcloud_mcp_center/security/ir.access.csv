@@ -10,3 +10,4 @@ access_mcp_center_oauth_client_manager,MCP OAuth client manager,erpcloud.mcp.cen
 access_mcp_center_oauth_code_manager,MCP OAuth code manager,erpcloud.mcp.center.oauth.code,erpcloud_mcp_center.group_mcp_center_manager,r,
 access_mcp_center_oauth_access_manager,MCP OAuth access manager,erpcloud.mcp.center.oauth.access.token,erpcloud_mcp_center.group_mcp_center_manager,r,
 access_mcp_center_oauth_refresh_manager,MCP OAuth refresh manager,erpcloud.mcp.center.oauth.refresh.token,erpcloud_mcp_center.group_mcp_center_manager,r,
+access_mcp_center_crud_request_manager,MCP CRUD request manager,erpcloud.mcp.center.crud.request,erpcloud_mcp_center.group_mcp_center_manager,r,

@@ -1,7 +1,7 @@
 {
     "name": "ERPCloud MCP Center",
     "summary": "Connect AI assistants to useful, governed Odoo workflows",
-    "version": "20.0.1.1.0",
+    "version": "20.0.1.2.0",
     "category": "Productivity",
     "author": "ERPCloud",
     "website": "https://erpcloud.vn",
@@ -10,7 +10,7 @@
     "license": "LGPL-3",
     "images": [
         "static/description/cover.png",
-        "static/description/screenshot_connect_en.png",
+        "static/description/screenshot_model_permissions_en.png",
         "static/description/screenshot_approval_en.png",
         "static/description/screenshot_mobile_en.png",
     ],

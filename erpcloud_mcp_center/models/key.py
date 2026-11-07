@@ -16,7 +16,8 @@ class MCPKey(models.Model):
     company_id = fields.Many2one("res.company", required=True, index=True, ondelete="cascade")
     prefix = fields.Char(readonly=True, index=True)
     secret_hash = fields.Char(readonly=True, index=True, groups="base.group_system")
-    scope = fields.Selection([("read", "Read only"), ("quote", "Read and propose quotations")], required=True, default="read")
+    scope = fields.Selection([("read", "Read only"), ("quote", "Read and propose quotations"),
+                              ("write", "Selected model CRUD")], required=True, default="read")
     model_permissions = fields.Json(default=dict, help="Explicit MCP tool permissions by supported Odoo model. Core access rights still apply.")
     active = fields.Boolean(default=True, index=True)
     expires_at = fields.Datetime(required=True, index=True)
@@ -42,23 +43,38 @@ class MCPKey(models.Model):
 
     @api.model
     def _normalize_permissions(self, permissions, scope):
-        allowed = {"res.partner": {"lookup"}, "product.product": {"lookup"},
+        special = {"res.partner": {"lookup"}, "product.product": {"lookup"},
                    "sale.order": {"briefing", "propose"}}
+        generic = {"read", "create", "write", "unlink"}
         if permissions is None:
             permissions = {"res.partner": ["lookup"], "product.product": ["lookup"],
                            "sale.order": ["briefing"] + (["propose"] if scope == "quote" else [])}
-        if not isinstance(permissions, dict) or set(permissions) - set(allowed):
+        if not isinstance(permissions, dict) or len(permissions) > 100:
             raise ValidationError("Danh sách model MCP không hợp lệ.")
         normalized = {}
         for model_name, operations in permissions.items():
+            if not self._selectable_model(model_name):
+                raise ValidationError("Model MCP không tồn tại hoặc không phù hợp.")
+            allowed = generic | special.get(model_name, set())
             if (not isinstance(operations, list) or any(not isinstance(op, str) for op in operations)
-                    or len(operations) != len(set(operations)) or set(operations) - allowed[model_name]):
+                    or len(operations) != len(set(operations)) or set(operations) - allowed):
                 raise ValidationError("Quyền MCP cho model không hợp lệ.")
             if "propose" in operations and scope != "quote":
                 raise AccessError("Quyền đề xuất báo giá cần phạm vi báo giá.")
+            if set(operations) & {"create", "write", "unlink"} and scope != "write":
+                raise AccessError("Quyền thêm, sửa, xóa cần phạm vi ghi dữ liệu.")
             if operations:
                 normalized[model_name] = sorted(operations)
         return normalized
+
+    @api.model
+    def _selectable_model(self, model_name):
+        if not isinstance(model_name, str) or not model_name or len(model_name) > 120:
+            return False
+        if model_name.startswith("erpcloud.mcp.center.") or model_name not in self.env.registry:
+            return False
+        model = self.env[model_name]
+        return bool(model._auto and not model._transient and not model._abstract)
 
     def permits(self, model_name, operation):
         self.ensure_one()
@@ -83,7 +99,7 @@ class MCPKey(models.Model):
             raise AccessError("Người dùng không thuộc công ty đã chọn.")
         if target != actor and not manager:
             raise AccessError("Chỉ quản trị viên được cấp quyền cho người khác.")
-        if scope not in ("read", "quote") or (scope == "quote" and not manager):
+        if scope not in ("read", "quote", "write") or (scope in ("quote", "write") and not manager):
             raise AccessError("Phạm vi truy cập không được phép.")
         if not label or len(label) > 120 or not 1 <= days <= 90:
             raise ValidationError("Tên kết nối hoặc thời hạn không hợp lệ.")

@@ -42,6 +42,61 @@ class TestMCPCenter(TransactionCase):
         with self.assertRaises(AccessError):
             self.key_model.issue("Unsafe operation", permissions={"sale.order": ["propose"]})
 
+    def test_dynamic_model_catalog_and_crud_with_idempotency(self):
+        gateway = self.env["erpcloud.mcp.center.gateway"]
+        self.assertTrue(any(item["model"] == "res.partner" for item in gateway.catalog(query="res.partner")))
+        with self.assertRaises(AccessError):
+            self.key_model.issue("Read scope cannot write", permissions={"res.partner": ["read", "create"]})
+        key, _secret = self.key_model.issue("Partner CRUD", scope="write", permissions={
+            "res.partner": ["read", "create", "write", "unlink"]})
+        names = [tool["name"] for tool in _tools(key, True)]
+        self.assertTrue({"list_models", "get_fields", "search_records", "get_record",
+                         "create_record", "update_record", "delete_record"} <= set(names))
+        self.assertNotIn("create_record", [tool["name"] for tool in _tools(key, False)])
+        fields = gateway.list_fields(key, "res.partner")["fields"]
+        self.assertTrue(any(item["name"] == "name" for item in fields))
+        first = gateway.create_record(key, "res.partner", {"name": "MCP Dynamic Buyer"}, "dynamic-create-1")
+        self.assertEqual(first, gateway.create_record(key, "res.partner", {"name": "MCP Dynamic Buyer"}, "dynamic-create-1"))
+        self.assertEqual(self.env["res.partner"].search_count([("name", "=", "MCP Dynamic Buyer")]), 1)
+        self.assertEqual(gateway.get_record(key, "res.partner", first["id"], ["name"])["record"]["name"], "MCP Dynamic Buyer")
+        self.assertEqual(gateway.search_records(key, "res.partner", "MCP Dynamic", ["name"])["count"], 1)
+        with self.assertRaises(ValidationError):
+            gateway.create_record(key, "res.partner", {"name": "Other"}, "dynamic-create-1")
+        with self.assertRaises(ValidationError):
+            gateway.update_record(key, "res.partner", first["id"], {"company_id": self.env.company.id}, "dynamic-update-1")
+        updated = gateway.update_record(key, "res.partner", first["id"], {"name": "Updated Buyer"}, "dynamic-update-2")
+        self.assertEqual(updated["status"], "updated")
+        with self.assertRaises(ValidationError):
+            gateway.delete_record(key, "res.partner", first["id"], "DELETE", "dynamic-delete-1")
+        deleted = gateway.delete_record(key, "res.partner", first["id"],
+                                        "DELETE res.partner %s" % first["id"], "dynamic-delete-2")
+        self.assertEqual(deleted, gateway.delete_record(key, "res.partner", first["id"],
+                                                        "DELETE res.partner %s" % first["id"], "dynamic-delete-2"))
+        self.assertFalse(self.env["res.partner"].browse(first["id"]).exists())
+
+    def test_dynamic_permissions_are_model_specific(self):
+        gateway = self.env["erpcloud.mcp.center.gateway"]
+        key, _secret = self.key_model.issue("Only partner read", permissions={"res.partner": ["read"]})
+        with self.assertRaises(AccessError):
+            gateway.search_records(key, "product.product", "MCP")
+        with self.assertRaises(AccessError):
+            gateway.create_record(key, "res.partner", {"name": "Denied"}, "denied-create-1")
+        with self.assertRaises(ValidationError):
+            self.key_model.issue("Invalid model", permissions={"erpcloud.mcp.center.key": ["read"]})
+
+    def test_dynamic_company_boundary_and_sensitive_fields(self):
+        gateway = self.env["erpcloud.mcp.center.gateway"]
+        foreign_company = self.env["res.company"].create({"name": "MCP Foreign Company"})
+        foreign_partner = self.env["res.partner"].create({
+            "name": "Foreign MCP Buyer", "company_id": foreign_company.id})
+        key, _secret = self.key_model.issue("Partner read", permissions={"res.partner": ["read"]})
+        with self.assertRaises(AccessError):
+            gateway.get_record(key, "res.partner", foreign_partner.id, ["name"])
+        self.assertFalse(gateway.search_records(key, "res.partner", "Foreign MCP Buyer")["records"])
+        user_key, _secret = self.key_model.issue("User read", permissions={"res.users": ["read"]})
+        available = {row["name"] for row in gateway.list_fields(user_key, "res.users")["fields"]}
+        self.assertFalse(any("password" in field or "token" in field for field in available))
+
     def test_quotation_permission_is_separate_from_quote_scope(self):
         key, _secret = self.key_model.issue("Quote scope without proposal", scope="quote",
                                             permissions={"sale.order": ["briefing"]})

@@ -24,6 +24,8 @@ No ERPCloud private addon is required. Installation adds no sample customer or p
 - OAuth discovery, dynamic client registration, PKCE authorization, refresh and revocation endpoints for remote clients; personal Bearer keys for clients that support them.
 - Scoped, expiring keys with one-time reveal, rotation, revocation and a per-key request budget.
 - Per-key choices for Odoo customer lookup, product lookup, quotation briefing and human-reviewed quotation proposal. Unselected tools are hidden and denied on direct invocation; Odoo user rights still apply.
+- Searchable catalog of installed persistent Odoo models. A manager can grant per-token read, create, update and delete operations; generic MCP tools enforce the token grant and the real Odoo user's ACLs/record rules. OAuth consent displays the selected connection and its model grants.
+- Generic model read/write tools filter unsafe fields and bound result size. A stable request key prevents duplicate create/update/delete actions after retries. Delete requires an exact model and record confirmation.
 - `whoami`, `customer_lookup`, `product_lookup`, and `sales_followup_briefing` read tools. Lookups let an assistant resolve real customer/product names before proposing a quotation. The briefing returns source document links and remains within the owner's Odoo rights and company.
 - `quotation_propose` prepares a preview; a named approver must approve it in MCP Center. Approval rechecks prices and taxes and creates only a **draft** sale order. Repeated requests cannot create duplicate orders.
 - An activity trail with trace IDs. Secrets and full prompt contents are not stored in that trail.
@@ -32,7 +34,7 @@ No ERPCloud private addon is required. Installation adds no sample customer or p
 
 ## Scope and limits
 
-The first release supports sales quotations only. It does not send or confirm orders, create invoices, access private documents, run arbitrary Odoo methods or connect to messaging channels. OAuth and third-party client UI compatibility depend on the client's current plan, policies and implementation; validate against the target client before customer rollout.
+The curated workflow supports sales quotations; generic CRUD can operate on any explicitly granted installed persistent model within Odoo's normal security rules. It does not send or confirm orders through a special workflow, run arbitrary Odoo methods or connect to messaging channels. OAuth and third-party client UI compatibility depend on the client's current plan, policies and implementation; validate against the target client before customer rollout.
 
 The connection test in MCP Center exercises local MCP initialization and tool discovery. It does not prove that a remote AI provider can reach a private Odoo server.
 

@@ -2,7 +2,7 @@
   <div style="background:#073f37;color:#fff;border-radius:16px;padding:36px 40px">
     <p style="color:#91e0bc;font-size:13px;font-weight:bold;letter-spacing:2px">ERPCloud · ODOO 20 COMMUNITY</p>
     <h1 style="font-size:36px;line-height:1.15;margin:12px 0">Give your AI assistant a useful, governed Odoo workspace.</h1>
-    <p style="font-size:17px;color:#d7eee4">Connect once. See sales follow-ups with source links. Review quotation previews before a draft is created.</p>
+    <p style="font-size:17px;color:#d7eee4">Choose Odoo models and CRUD permissions per connection. Get source-backed answers and keep quotation approvals in human hands.</p>
   </div>
   <h2 style="margin-top:35px">Built for business users</h2>
   <p>MCP Center opens from its own root menu. Create a personal connection, choose the exact Odoo data and workflow permissions, copy the MCP URL, and review connection activity. The desktop sidebar collapses to make room for work; the mobile interface has its own navigation. Vietnamese and English interface copy is included.</p>
@@ -12,14 +12,14 @@
     <li><strong>Sales follow-up briefing:</strong> read recent draft and sent quotations within the owner's Odoo permissions and company. Responses include document numbers and Odoo links.</li>
     <li><strong>Human-reviewed quotation proposal:</strong> preview customer, lines, prices and taxes. An authorized person approves or rejects; approval creates only a draft quotation. Price changes require a new preview.</li>
   </ul>
-  <h2 style="margin-top:35px">Choose access per connection</h2>
-  <p>Enable customer lookup, product lookup and quotation briefing separately. A manager can also grant quotation proposals, which still require human approval. Unselected tools disappear from discovery and direct calls are denied. Every call remains within the connected Odoo user's normal rights and company.</p>
-  <img src="screenshot_connect_en.png" alt="Connection URL, Odoo model permissions and AI client setup" style="width:100%;border:1px solid #e2ece7;border-radius:12px"/>
+  <h2 style="margin-top:35px">Choose installed Odoo models and exact CRUD rights</h2>
+  <p>Search installed persistent Odoo models. Grant read, create, update or delete to an individual connection; an MCP Center manager controls write scope. The token's grants always intersect with Odoo ACLs, record rules and company access. Generic tools expose bounded, safe fields; writes use idempotency keys and deletion requires an exact model/record confirmation. Curated customer, product and quotation workflows remain available alongside generic model access.</p>
+  <img src="screenshot_model_permissions_en.png" alt="Searchable Odoo model catalog with per-token read create update and delete permissions" style="width:100%;border:1px solid #e2ece7;border-radius:12px"/>
   <h2 style="margin-top:35px">Quotations stay in human hands</h2>
   <p>AI proposals appear in a dedicated review page. An approver sees the exact customer, product lines and total before a draft quotation is created. This screenshot is from a clean QA database with sample business records.</p>
   <img src="screenshot_approval_en.png" alt="Human approval screen with a sample quotation proposal" style="width:100%;border:1px solid #e2ece7;border-radius:12px"/>
   <h2 style="margin-top:35px">Designed for control</h2>
-  <p>Read-only by default. Named, expiring and revocable keys. OAuth with PKCE for supported remote clients. Per-key request limits and activity trace IDs. No arbitrary Odoo model access and no automatic order confirmation or sending.</p>
+  <p>Read-only by default. Named, expiring and revocable keys. OAuth with PKCE and an explicit connection/grant selector on the consent page. Per-key request limits and activity trace IDs. No arbitrary method execution, SQL, automatic order confirmation or sending.</p>
   <img src="screenshot_mobile_en.png" alt="MCP Center mobile interface" style="display:block;max-width:370px;width:100%;margin:18px auto;border:1px solid #e2ece7;border-radius:14px"/>
   <h2 style="margin-top:35px">Install</h2>
   <ol>

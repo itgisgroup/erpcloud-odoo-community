@@ -13,6 +13,7 @@ const paths = {
     search: "/erpcloud_mcp_center/search",
     propose: "/erpcloud_mcp_center/propose",
     decide: "/erpcloud_mcp_center/decide",
+    models_catalog: "/erpcloud_mcp_center/models_catalog",
 };
 
 export class MCPCenter extends Component {
@@ -25,6 +26,7 @@ export class MCPCenter extends Component {
             sidebarCollapsed: localStorage.getItem("erpcloud_mcp_center_sidebar") === "closed",
             keyName: localStorage.getItem("erpcloud_mcp_center_lang") === "en" ? "My assistant" : "Trợ lý của tôi", scope: "read", days: 30,
             modelPermissions: { partner: true, product: true, orders: true, quote: false },
+            modelSearch: "", modelCatalog: [], modelGrants: {}, modelLoading: false,
             partnerQuery: "", productQuery: "", partners: [], products: [], partner: null,
             lineProduct: null, quantity: 1, lines: [], note: "", chosenKey: null, selfTest: "",
         });
@@ -40,7 +42,31 @@ export class MCPCenter extends Component {
     }
     error(e) { this.notification.add(e?.message || String(e), { type: "danger" }); }
     success(message) { this.notification.add(message, { type: "success" }); }
-    setTab(tab) { this.state.tab = tab; this.state.secret = ""; this.state.secretVisible = false; }
+    setTab(tab) {
+        this.state.tab = tab; this.state.secret = ""; this.state.secretVisible = false;
+        if (tab === "connect" && !this.state.modelCatalog.length) this.loadModelCatalog();
+    }
+    async loadModelCatalog() {
+        const query = this.state.modelSearch;
+        this.state.modelLoading = true;
+        try {
+            const rows = await this.call("models_catalog", { query });
+            if (query === this.state.modelSearch) this.state.modelCatalog = rows;
+        } catch (e) { this.error(e); }
+        finally { this.state.modelLoading = false; }
+    }
+    searchModels(value) {
+        this.state.modelSearch = value;
+        clearTimeout(this.modelSearchTimer);
+        this.modelSearchTimer = setTimeout(() => this.loadModelCatalog(), 220);
+    }
+    setModelGrant(model, operation, enabled) {
+        const existing = new Set(this.state.modelGrants[model] || []);
+        if (enabled) existing.add(operation); else existing.delete(operation);
+        this.state.modelGrants = { ...this.state.modelGrants, [model]: [...existing] };
+    }
+    hasModelGrant(model, operation) { return (this.state.modelGrants[model] || []).includes(operation); }
+    get modelGrantCount() { return Object.values(this.state.modelGrants).filter((operations) => operations.length).length; }
     toggleSidebar() {
         this.state.sidebarCollapsed = !this.state.sidebarCollapsed;
         localStorage.setItem("erpcloud_mcp_center_sidebar", this.state.sidebarCollapsed ? "closed" : "open");
@@ -48,6 +74,10 @@ export class MCPCenter extends Component {
     setScope(scope) {
         this.state.scope = scope;
         this.state.modelPermissions = { ...this.state.modelPermissions, quote: scope === "quote" };
+        if (scope !== "write") {
+            this.state.modelGrants = Object.fromEntries(Object.entries(this.state.modelGrants).map(
+                ([model, operations]) => [model, operations.filter((operation) => operation === "read")]));
+        }
     }
     setPermission(name, enabled) {
         this.state.modelPermissions = { ...this.state.modelPermissions, [name]: Boolean(enabled) };
@@ -63,6 +93,9 @@ export class MCPCenter extends Component {
                 ...(this.state.scope === "quote" && selected.quote ? ["propose"] : []),
             ];
         }
+        for (const [model, operations] of Object.entries(this.state.modelGrants)) {
+            if (operations.length) permissions[model] = [...new Set([...(permissions[model] || []), ...operations])];
+        }
         return permissions;
     }
     permissionSummary(key) {
@@ -72,6 +105,8 @@ export class MCPCenter extends Component {
         if (grants["product.product"]?.includes("lookup")) names.push(this.tr("Sản phẩm", "Products"));
         if (grants["sale.order"]?.includes("briefing")) names.push(this.tr("Xem báo giá", "Quotation briefing"));
         if (grants["sale.order"]?.includes("propose")) names.push(this.tr("Đề xuất báo giá", "Quote proposal"));
+        const generic = Object.values(grants).reduce((count, operations) => count + operations.filter((op) => ["read", "create", "write", "unlink"].includes(op)).length, 0);
+        if (generic) names.push(this.tr(`${generic} quyền model`, `${generic} model grants`));
         return names.length ? names.join(" · ") : this.tr("Không có quyền dữ liệu", "No data permissions");
     }
     setLanguage() {
