@@ -29,6 +29,7 @@ def _business_env(key, model):
 
 
 def _briefing(key, arguments):
+    key.require_permission("sale.order", "briefing")
     if not isinstance(arguments, dict) or set(arguments) - {"days"}:
         raise ValidationError("Chỉ dùng tham số days.")
     try:
@@ -63,6 +64,7 @@ def _briefing(key, arguments):
 
 
 def _lookup(key, arguments, model_name):
+    key.require_permission(model_name, "lookup")
     if not isinstance(arguments, dict) or set(arguments) != {"query"}:
         raise ValidationError("Provide a single query value.")
     query = str(arguments["query"] or "").strip()[:80]
@@ -98,7 +100,12 @@ def _tools(key, oauth_write):
          "inputSchema": {"type": "object", "properties": {"query": {"type": "string", "minLength": 2, "maxLength": 80}}, "required": ["query"], "additionalProperties": False},
          "annotations": {"readOnlyHint": True, "destructiveHint": False}},
     ]
-    if key.scope == "quote" and oauth_write:
+    tools = [tool for tool in tools if tool["name"] == "whoami" or {
+        "sales_followup_briefing": key.permits("sale.order", "briefing"),
+        "customer_lookup": key.permits("res.partner", "lookup"),
+        "product_lookup": key.permits("product.product", "lookup"),
+    }.get(tool["name"], False)]
+    if key.scope == "quote" and oauth_write and key.permits("sale.order", "propose"):
         tools.append({
             "name": "quotation_propose",
             "description": "Prepare an exact quotation preview for human review. This does not create or confirm a sale order. An authorized approver must approve in MCP Center.",
@@ -184,14 +191,15 @@ class MCPController(http.Controller):
                     if arguments:
                         raise ValidationError("whoami không nhận tham số.")
                     result = {"user": key.user_id.name, "company": key.company_id.name,
-                              "company_id": key.company_id.id, "scope": key.scope}
+                              "company_id": key.company_id.id, "scope": key.scope,
+                              "model_permissions": key._permissions()}
                 elif name == "sales_followup_briefing":
                     result = _briefing(key, arguments)
                 elif name == "customer_lookup":
                     result = _lookup(key, arguments, "res.partner")
                 elif name == "product_lookup":
                     result = _lookup(key, arguments, "product.product")
-                elif name == "quotation_propose" and key.scope == "quote" and oauth_write:
+                elif name == "quotation_propose" and key.scope == "quote" and oauth_write and key.permits("sale.order", "propose"):
                     if not isinstance(arguments, dict) or set(arguments) - {"partner_id", "lines", "note", "request_key"}:
                         raise ValidationError("Tham số báo giá không hợp lệ.")
                     inputs = {k: arguments[k] for k in ("partner_id", "lines", "note") if k in arguments}

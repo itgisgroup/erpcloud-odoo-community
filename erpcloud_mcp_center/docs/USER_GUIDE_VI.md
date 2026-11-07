@@ -23,3 +23,6 @@ Không có thao tác gửi báo giá hoặc xác nhận đơn tự động.
 ## Phân quyền và xử lý lỗi
 
 Người dùng cần quyền Odoo chuẩn để xem/tạo báo giá. Nhóm **MCP Center Manager** cấp khóa đề xuất; nhóm **MCP Center Approver** duyệt. Trong tab **Hoạt động**, sao chép mã truy vết khi liên hệ `info@erpcloud.vn`. Không gửi khóa cá nhân qua email hoặc chat hỗ trợ.
+# Quyền theo model trong bản 20.0.1.1.0
+
+Trước khi tạo khóa, chọn dữ liệu Odoo và tiện ích được phép dùng: tra cứu khách hàng, tra cứu sản phẩm, xem tóm tắt báo giá. Quản trị viên có thể cấp thêm quyền đề xuất báo giá trong phạm vi báo giá; mỗi đề xuất vẫn cần người phụ trách duyệt. Tiện ích không được chọn sẽ không xuất hiện trong danh sách MCP và bị từ chối nếu gọi trực tiếp. Muốn đổi quyền của khóa cũ, hãy ngắt khóa đó rồi tạo khóa mới. Nút góc trên trái đóng hoặc mở sidebar trên desktop.

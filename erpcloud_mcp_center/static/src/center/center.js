@@ -22,7 +22,9 @@ export class MCPCenter extends Component {
         this.state = proxy({
             tab: "home", loading: true, busy: false, data: null, secret: "", secretVisible: false,
             language: localStorage.getItem("erpcloud_mcp_center_lang") || "vi", platform: "claude",
+            sidebarCollapsed: localStorage.getItem("erpcloud_mcp_center_sidebar") === "closed",
             keyName: localStorage.getItem("erpcloud_mcp_center_lang") === "en" ? "My assistant" : "Trợ lý của tôi", scope: "read", days: 30,
+            modelPermissions: { partner: true, product: true, orders: true, quote: false },
             partnerQuery: "", productQuery: "", partners: [], products: [], partner: null,
             lineProduct: null, quantity: 1, lines: [], note: "", chosenKey: null, selfTest: "",
         });
@@ -39,6 +41,39 @@ export class MCPCenter extends Component {
     error(e) { this.notification.add(e?.message || String(e), { type: "danger" }); }
     success(message) { this.notification.add(message, { type: "success" }); }
     setTab(tab) { this.state.tab = tab; this.state.secret = ""; this.state.secretVisible = false; }
+    toggleSidebar() {
+        this.state.sidebarCollapsed = !this.state.sidebarCollapsed;
+        localStorage.setItem("erpcloud_mcp_center_sidebar", this.state.sidebarCollapsed ? "closed" : "open");
+    }
+    setScope(scope) {
+        this.state.scope = scope;
+        this.state.modelPermissions = { ...this.state.modelPermissions, quote: scope === "quote" };
+    }
+    setPermission(name, enabled) {
+        this.state.modelPermissions = { ...this.state.modelPermissions, [name]: Boolean(enabled) };
+    }
+    get permissionsForIssue() {
+        const selected = this.state.modelPermissions;
+        const permissions = {};
+        if (selected.partner) permissions["res.partner"] = ["lookup"];
+        if (selected.product) permissions["product.product"] = ["lookup"];
+        if (selected.orders || (this.state.scope === "quote" && selected.quote)) {
+            permissions["sale.order"] = [
+                ...(selected.orders ? ["briefing"] : []),
+                ...(this.state.scope === "quote" && selected.quote ? ["propose"] : []),
+            ];
+        }
+        return permissions;
+    }
+    permissionSummary(key) {
+        const grants = key.permissions || {};
+        const names = [];
+        if (grants["res.partner"]?.includes("lookup")) names.push(this.tr("Khách", "Customers"));
+        if (grants["product.product"]?.includes("lookup")) names.push(this.tr("Sản phẩm", "Products"));
+        if (grants["sale.order"]?.includes("briefing")) names.push(this.tr("Xem báo giá", "Quotation briefing"));
+        if (grants["sale.order"]?.includes("propose")) names.push(this.tr("Đề xuất báo giá", "Quote proposal"));
+        return names.length ? names.join(" · ") : this.tr("Không có quyền dữ liệu", "No data permissions");
+    }
     setLanguage() {
         this.state.language = this.state.language === "vi" ? "en" : "vi";
         if (this.state.keyName === "Trợ lý của tôi" || this.state.keyName === "My assistant") {
@@ -79,7 +114,8 @@ export class MCPCenter extends Component {
         if (this.state.busy) return;
         this.state.busy = true;
         try {
-            const result = await this.call("issue", { name: this.state.keyName, scope: this.state.scope, days: Number(this.state.days) });
+            const result = await this.call("issue", { name: this.state.keyName, scope: this.state.scope,
+                days: Number(this.state.days), permissions: this.permissionsForIssue });
             await this.refresh();
             this.state.secret = result.secret;
             this.state.secretVisible = false;

@@ -23,10 +23,12 @@ No ERPCloud private addon is required. Installation adds no sample customer or p
 - Streamable HTTP MCP endpoint at `/mcp`, with JSON-RPC initialize, tools/list, tools/call and sessions.
 - OAuth discovery, dynamic client registration, PKCE authorization, refresh and revocation endpoints for remote clients; personal Bearer keys for clients that support them.
 - Scoped, expiring keys with one-time reveal, rotation, revocation and a per-key request budget.
+- Per-key choices for Odoo customer lookup, product lookup, quotation briefing and human-reviewed quotation proposal. Unselected tools are hidden and denied on direct invocation; Odoo user rights still apply.
 - `whoami`, `customer_lookup`, `product_lookup`, and `sales_followup_briefing` read tools. Lookups let an assistant resolve real customer/product names before proposing a quotation. The briefing returns source document links and remains within the owner's Odoo rights and company.
 - `quotation_propose` prepares a preview; a named approver must approve it in MCP Center. Approval rechecks prices and taxes and creates only a **draft** sale order. Repeated requests cannot create duplicate orders.
 - An activity trail with trace IDs. Secrets and full prompt contents are not stored in that trail.
 - Original desktop and mobile UI with Vietnamese and English interface copy.
+- Collapsible desktop sidebar with a remembered preference.
 
 ## Scope and limits
 

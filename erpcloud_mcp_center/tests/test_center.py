@@ -2,6 +2,7 @@ from odoo.exceptions import AccessError, ValidationError
 from odoo.tests.common import TransactionCase, tagged
 
 from ..protocol.engine import MCPProtocolEngine, MCPSession
+from ..controllers.mcp import _tools
 
 
 @tagged("post_install", "-at_install")
@@ -29,8 +30,31 @@ class TestMCPCenter(TransactionCase):
         key.revoke_for_actor()
         self.assertFalse(self.key_model.authenticate(secret))
 
+    def test_model_permissions_hide_tools_and_block_direct_calls(self):
+        key, _secret = self.key_model.issue("Customer lookup only", permissions={"res.partner": ["lookup"]})
+        self.assertEqual([tool["name"] for tool in _tools(key, True)], ["whoami", "customer_lookup"])
+        self.assertTrue(key.permits("res.partner", "lookup"))
+        self.assertFalse(key.permits("sale.order", "briefing"))
+        with self.assertRaises(AccessError):
+            key.require_permission("product.product", "lookup")
+        with self.assertRaises(ValidationError):
+            self.key_model.issue("Unsafe model", permissions={"res.users": ["lookup"]})
+        with self.assertRaises(AccessError):
+            self.key_model.issue("Unsafe operation", permissions={"sale.order": ["propose"]})
+
+    def test_quotation_permission_is_separate_from_quote_scope(self):
+        key, _secret = self.key_model.issue("Quote scope without proposal", scope="quote",
+                                            permissions={"sale.order": ["briefing"]})
+        self.assertNotIn("quotation_propose", [tool["name"] for tool in _tools(key, True)])
+        with self.assertRaises(AccessError):
+            self.proposal_model.propose(key, {"partner_id": self.partner.id,
+                "lines": [{"product_id": self.product.id, "quantity": 1}]}, "no-propose-permission")
+        key.model_permissions = False
+        self.assertTrue(key.permits("sale.order", "propose"))
+
     def test_quote_preview_approval_and_idempotency(self):
         key, _secret = self.key_model.issue("Test quote key", scope="quote")
+        self.assertNotIn("quotation_propose", [tool["name"] for tool in _tools(key, False)])
         inputs = {"partner_id": self.partner.id,
                   "lines": [{"product_id": self.product.id, "quantity": 2}],
                   "note": "Human review required"}

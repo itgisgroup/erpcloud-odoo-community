@@ -92,6 +92,7 @@ class MCPProposal(models.Model):
             raise AccessError("Connection is not active for this Odoo user and company.")
         if key.scope != "quote":
             raise AccessError("Kết nối này chỉ được xem dữ liệu.")
+        key.require_permission("sale.order", "propose")
         request_key = str(request_key or "").strip()
         if not 8 <= len(request_key) <= 128:
             raise ValidationError("Mã yêu cầu phải dài 8–128 ký tự.")

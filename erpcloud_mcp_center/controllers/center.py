@@ -19,7 +19,7 @@ def _approver():
 
 def _key_payload(key):
     return {"id": key.id, "name": key.name, "prefix": key.prefix,
-            "scope": key.scope, "active": key.active,
+            "scope": key.scope, "permissions": key._permissions(), "active": key.active,
             "owner": key.user_id.name, "company": key.company_id.name,
             "expires_at": fields.Datetime.to_string(key.expires_at),
             "last_used_at": fields.Datetime.to_string(key.last_used_at) if key.last_used_at else ""}
@@ -64,9 +64,9 @@ class MCPCenterController(http.Controller):
         }
 
     @http.route("/erpcloud_mcp_center/issue", type="jsonrpc", auth="user")
-    def issue(self, name, scope="read", days=30, user_id=None):
+    def issue(self, name, scope="read", days=30, user_id=None, permissions=None):
         record, secret = request.env["erpcloud.mcp.center.key"].issue(
-            name, user_id=user_id, scope=scope, days=days,
+            name, user_id=user_id, scope=scope, days=days, permissions=permissions,
         )
         return {"key": _key_payload(record), "secret": secret}
 
@@ -90,6 +90,7 @@ class MCPCenterController(http.Controller):
         created, secret = request.env["erpcloud.mcp.center.key"].issue(
             key.name + " (mới)", user_id=key.user_id.id,
             company_id=key.company_id.id, scope=key.scope, days=30,
+            permissions=key._permissions(),
         )
         key.with_user(request.env.user).revoke_for_actor()
         return {"key": _key_payload(created), "secret": secret}
