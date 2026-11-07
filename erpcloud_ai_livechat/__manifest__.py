@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ERPCloud AI Livechat',
-    'version': '20.0.1.1.0',
+    'version': '20.0.1.2.0',
     'category': 'Productivity/AI',
     'summary': 'Automated AI Operator for Odoo Livechat',
     'description': """

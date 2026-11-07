@@ -1,5 +1,10 @@
 # Changelog
 
+## 20.0.1.2.0 (2026-11-08)
++- Added an explicitly simulated conversation screenshot from Odoo 20 QA to show the Livechat session experience.
+- Expanded the marketplace description to explain channel setup, handoff and provider requirements.
+- Refreshed the cover and social media artwork.
+
 ## 20.0.1.1.0 (2026-11-07)
 - Verified clean Odoo 20 Community installation and browser behavior.
 - Replaced unrelated marketplace graphics with ERPCloud artwork and real QA screenshots.

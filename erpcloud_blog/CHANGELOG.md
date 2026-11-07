@@ -1,5 +1,10 @@
 # Changelog
 
+## 20.0.1.2.0 (2026-11-08)
++- Added a six-article editorial QA gallery with original illustrative photography for marketplace screenshots; normal installations remain empty.
+- Fixed Odoo 20 cover image rendering and limited public image access to published articles.
+- Added desktop/mobile screenshots and clearer setup and feature descriptions.
+
 ## 20.0.1.1.0 (2026-11-07)
 - Verified clean Odoo 20 Community installation and browser behavior.
 - Replaced unrelated marketplace graphics with ERPCloud artwork and real QA screenshots.

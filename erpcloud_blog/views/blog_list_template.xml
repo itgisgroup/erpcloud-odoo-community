@@ -29,7 +29,7 @@
               <article class="ec-blog-card">
                 <a t-attf-href="/blog/#{post.slug}" t-att-aria-label="post.name">
                   <div class="ec-blog-card-art">
-                    <img t-if="post.cover_image" t-att-src="'data:image/png;base64,' + post.cover_image.decode('utf-8')" t-att-alt="post.name" loading="lazy"/>
+                    <img t-if="post.cover_image" t-attf-src="/blog/image/#{post.id}" t-att-alt="post.name" loading="lazy"/>
                     <span t-else="" class="ec-blog-card-initial"><t t-out="(post.name or 'A')[:1]"/></span>
                   </div>
                   <div class="ec-blog-card-body">

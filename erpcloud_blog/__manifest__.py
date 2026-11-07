@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'ERPCloud Blog & News',
-    'version': '20.0.1.1.0',
+    'version': '20.0.1.2.0',
     'category': 'Website/Blog',
     'summary': 'Professional Blog & News Content Management System',
     'description': """

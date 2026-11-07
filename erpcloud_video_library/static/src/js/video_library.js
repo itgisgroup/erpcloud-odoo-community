@@ -29,7 +29,7 @@ function videoCard(video) {
     play.appendChild(make('i', 'fa fa-play'));
     overlay.appendChild(play);
     thumb.appendChild(overlay);
-    thumb.appendChild(make('span', 'video_duration', video.duration || ''));
+    if (video.duration) thumb.appendChild(make('span', 'video_duration', video.duration));
     if (video.is_featured) thumb.appendChild(make('span', 'video_featured_badge', 'Featured'));
     const body = make('div', 'video_card_body');
     body.appendChild(make('span', 'video_category', video.category_name || ''));

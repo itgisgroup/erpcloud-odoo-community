@@ -15,6 +15,18 @@ _logger = logging.getLogger(__name__)
 class BlogController(http.Controller):
     """Frontend Blog Controller - Professional Blog System"""
 
+    @http.route('/blog/image/<int:post_id>', type='http', auth='public', website=True)
+    def blog_cover_image(self, post_id, **kwargs):
+        post = request.env['erpcloud.blog.post'].sudo().search([
+            ('id', '=', post_id), ('state', '=', 'published'), ('is_published', '=', True),
+        ], limit=1)
+        if not post or not post.cover_image or not post.cover_image.mimetype.startswith('image/'):
+            raise NotFound()
+        return request.make_response(post.cover_image.content, headers=[
+            ('Content-Type', post.cover_image.mimetype),
+            ('Cache-Control', 'private, max-age=0, no-store'),
+        ])
+
     def _convert_embedded_video_to_iframe(self, content):
         """
         Convert Odoo embedded video components to simple iframes

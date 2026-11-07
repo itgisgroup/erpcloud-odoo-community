@@ -12,7 +12,7 @@
             <p t-if="post.subtitle"><t t-out="post.subtitle"/></p>
             <div class="ec-blog-byline"><span><t t-out="post.author_name or post.author_id.name"/></span><time t-if="post.published_date"><t t-out="post.published_date.strftime('%d %b %Y')"/></time></div>
           </header>
-          <div t-if="post.cover_image" class="ec-blog-article-cover"><img t-att-src="'data:image/png;base64,' + post.cover_image.decode('utf-8')" t-att-alt="post.name"/></div>
+          <div t-if="post.cover_image" class="ec-blog-article-cover"><img t-attf-src="/blog/image/#{post.id}" t-att-alt="post.name"/></div>
           <div class="ec-blog-prose" t-out="processed_content"/>
           <div t-if="post.tag_ids" class="ec-blog-tags"><strong>Topics</strong><t t-foreach="post.tag_ids" t-as="tag"><a t-attf-href="/blog?tag=#{tag.slug}"><t t-out="tag.name"/></a></t></div>
         </article>

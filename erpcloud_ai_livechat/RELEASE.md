@@ -2,7 +2,7 @@
 
 - Module: `erpcloud_ai_livechat`
 - Series: Odoo 20.0
-- Target version: 20.0.1.1.0
+- Target version: 20.0.1.2.0
 - License: LGPL-3
 - Price: Free
 - Publisher repo: `itgisgroup/erpcloud-odoo-community` branch `20.0`

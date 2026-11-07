@@ -82,6 +82,8 @@
 
 .video_thumbnail_label { font-size: 12px; letter-spacing: .16em; font-weight: 700; color: #a9dbe1; }
 .video_thumbnail_title { max-width: 85%; font-size: clamp(18px, 2vw, 28px); line-height: 1.2; }
+.video_card_col:nth-child(3n+2) .video_thumbnail_fallback { background: radial-gradient(circle at 82% 18%, #8e8abf 0, transparent 34%), linear-gradient(135deg, #172b55, #425178); }
+.video_card_col:nth-child(3n+3) .video_thumbnail_fallback { background: radial-gradient(circle at 82% 18%, #66a4a0 0, transparent 35%), linear-gradient(135deg, #17364b, #326b68); }
 
 .video_thumbnail img {
     position: relative;

@@ -1,5 +1,10 @@
 # Changelog
 
+## 20.0.1.2.0 (2026-11-08)
++- Added six categorized official Odoo video links to the disposable QA gallery for richer screenshots; normal installations remain empty.
+- Added a category-filter screenshot and hid empty duration badges.
+- Refreshed the marketplace cover and feature description.
+
 ## 20.0.1.1.0 (2026-11-07)
 - Verified clean Odoo 20 Community installation and browser behavior.
 - Replaced unrelated marketplace graphics with ERPCloud artwork and real QA screenshots.
