@@ -1,5 +1,9 @@
 # Hướng dẫn ERPCloud MCP Center
 
+## Đăng nhập OAuth đơn giản
+
+Với trợ lý hỗ trợ OAuth, nhập URL công khai `https://ten-mien-odoo/mcp`. Trợ lý mở màn đăng nhập Odoo. Sau khi đăng nhập, kiểm tra tên ứng dụng xin quyền, tài khoản, công ty và địa chỉ ứng dụng sẽ nhận kết quả. Nhấn **Sign in and allow** để tạo kết nối chỉ đọc tự động, không cần sao chép token. Ô **Allow changes** mặc định bỏ chọn; muốn bật phải chọn kết nối đã được quản lý MCP Center cấp đúng thao tác cho từng model. Quyền Odoo và quy tắc công ty vẫn áp dụng. Kết nối OAuth cũ cần đăng nhập lại sau khi nâng cấp 20.0.1.3.0 vì token mới được ràng buộc với URL máy chủ MCP.
+
 ## Cài đặt
 
 Sao chép thư mục `erpcloud_mcp_center` vào addons path của Odoo 20 Community, cập nhật danh sách Apps rồi cài **ERPCloud MCP Center**. Module phụ thuộc `base`, `web`, `sale` chuẩn của Odoo. Mở menu **MCP Center** để bắt đầu.

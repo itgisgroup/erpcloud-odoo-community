@@ -1,5 +1,11 @@
 # Changelog
 
+## 20.0.1.3.0 — 2026-11-07
+
+- OAuth sign-in automatically creates a read-only connection for the signed-in Odoo user.
+- Consent shows the requesting application, account, company, return address and requested scope. **Allow changes** starts unticked and requires a manager-approved connection with selected model rights.
+- OAuth authorization codes, access tokens and rotating refresh tokens are bound to the MCP server URL. Token requests for another resource are rejected; existing OAuth sign-ins must reconnect after upgrade.
+
 ## 20.0.1.2.1 — 2026-11-07
 
 - Show all four model operations in the permission card. Read-only remains the default; an MCP Center manager can enable write scope directly from that card before selecting Create, Update or Delete.

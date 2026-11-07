@@ -34,6 +34,7 @@ class MCPOAuthCode(models.Model):
     redirect_uri = fields.Char(required=True)
     code_challenge = fields.Char(required=True)
     scope = fields.Char(required=True, default="read")
+    resource_uri = fields.Char(help="OAuth protected resource URI. Older grants without an audience must reconnect.")
     expires_at = fields.Datetime(required=True, index=True)
     consumed_at = fields.Datetime(index=True)
 
@@ -47,6 +48,7 @@ class MCPOAuthAccessToken(models.Model):
     key_id = fields.Many2one("erpcloud.mcp.center.key", required=True, ondelete="cascade")
     client_id = fields.Many2one("erpcloud.mcp.center.oauth.client", required=True, ondelete="cascade")
     scope = fields.Char(required=True, default="read")
+    resource_uri = fields.Char(help="OAuth protected resource URI. Older grants without an audience must reconnect.")
     expires_at = fields.Datetime(required=True, index=True)
     revoked_at = fields.Datetime(index=True)
     _access_hash_unique = models.Constraint(
@@ -54,9 +56,10 @@ class MCPOAuthAccessToken(models.Model):
     )
 
     @api.model
-    def resolve_active(self, raw):
+    def resolve_active(self, raw, resource_uri):
         return self.sudo().search([
             ("token_hash", "=", oauth_hash(raw)), ("revoked_at", "=", False),
+            ("resource_uri", "=", resource_uri),
             ("expires_at", ">", fields.Datetime.now()), ("client_id.active", "=", True),
             ("key_id.active", "=", True), ("key_id.expires_at", ">", fields.Datetime.now()),
         ], limit=1)
@@ -71,6 +74,7 @@ class MCPOAuthRefreshToken(models.Model):
     key_id = fields.Many2one("erpcloud.mcp.center.key", required=True, ondelete="cascade")
     client_id = fields.Many2one("erpcloud.mcp.center.oauth.client", required=True, ondelete="cascade")
     scope = fields.Char(required=True, default="read")
+    resource_uri = fields.Char(help="OAuth protected resource URI. Older grants without an audience must reconnect.")
     expires_at = fields.Datetime(required=True, index=True)
     used_at = fields.Datetime(index=True)
     revoked_at = fields.Datetime(index=True)

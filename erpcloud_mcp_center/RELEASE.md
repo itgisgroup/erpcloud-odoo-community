@@ -1,4 +1,10 @@
-# ERPCloud MCP Center — release 20.0.1.2.1
+# ERPCloud MCP Center — release 20.0.1.3.0
+
+## OAuth sign-in update
+
+OAuth-capable assistants now start with a direct Odoo sign-in. Consent shows the requesting application, account, company, return address and requested scopes. A read-only connection is issued automatically when the user consents. **Allow changes** remains unticked and requires an existing manager-approved key whose exact model operations are shown. Authorization codes, access tokens and rotating refresh tokens are bound to the MCP resource URL; an attempt to redeem a code for another resource is rejected. Reuse of a rotated refresh token revokes the family. Existing OAuth clients must sign in again after upgrade because old grants lack an audience.
+
+QA on 2026-11-07: clean Odoo 20 CE install **14 tests, 0 failed, 0 errors** (`../reports/erpcloud_mcp_center-test.log`); local and public HTTPS OAuth browser flows passed (`../reports/mcp_center_oauth_qa.json`, `../reports/mcp_center_oauth_public_qa.json`), including automatic key issuance, read-only default, audience rejection, MCP tool discovery and refresh replay rejection. Selected write consent passed local browser QA with create/delete of a disposable partner and token revocation (`../reports/mcp_center_oauth_write_qa.json`). The real Claude/ChatGPT UI connection remains unverified; this endpoint uses a temporary QA tunnel. New consent screenshot: `static/description/screenshot_oauth_consent_en.png`.
 
 ## Delivered
 

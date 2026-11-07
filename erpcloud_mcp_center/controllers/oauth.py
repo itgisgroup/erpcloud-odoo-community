@@ -45,41 +45,61 @@ def _valid_redirect(uri):
     ) and not parsed.fragment and not parsed.username and not parsed.password
 
 
-def _issue_tokens(key, client, scope, family=None):
+def _issue_tokens(key, client, scope, resource_uri, family=None):
     now = fields.Datetime.now()
     access, refresh = secrets.token_urlsafe(48), secrets.token_urlsafe(64)
     family = family or secrets.token_urlsafe(24)
     request.env["erpcloud.mcp.center.oauth.access.token"].sudo().create({
         "token_hash": oauth_hash(access), "family_id": family, "key_id": key.id,
-        "client_id": client.id, "scope": scope,
+        "client_id": client.id, "scope": scope, "resource_uri": resource_uri,
         "expires_at": fields.Datetime.add(now, minutes=15),
     })
     request.env["erpcloud.mcp.center.oauth.refresh.token"].sudo().create({
         "token_hash": oauth_hash(refresh), "family_id": family, "key_id": key.id,
-        "client_id": client.id, "scope": scope,
+        "client_id": client.id, "scope": scope, "resource_uri": resource_uri,
         "expires_at": fields.Datetime.add(now, days=30),
     })
     return {"token_type": "Bearer", "access_token": access, "expires_in": 900,
             "refresh_token": refresh, "scope": scope}
 
 
-def _consent_html(client_name, scopes, hidden, csrf_token, keys):
-    options = "".join("<option value='%s'>%s — %s</option>" % (
-        key.id, escape(key.name), escape(", ".join(
-            "%s: %s" % (model, "/".join(operations))
-            for model, operations in key._permissions().items())[:220])) for key in keys)
+def _consent_html(client_name, redirect_uri, user_name, company_name, scopes, hidden, csrf_token, keys):
+    options = "<option value='0'>Create a new read-only connection (recommended)</option>" + "".join(
+        "<option value='%s'>%s — %s</option>" % (
+            key.id, escape(key.name), escape(", ".join(
+                "%s: %s" % (model, "/".join(operations))
+                for model, operations in key._permissions().items())[:220])) for key in keys)
+    write_keys = [key for key in keys if key.scope in ("write", "quote")]
+    can_write = "write" in scopes and bool(write_keys)
+    write_note = ("This application did not request write access." if "write" not in scopes
+                  else "A manager must first create a write-enabled connection in MCP Center.")
+    change_option = ("<label class='change'><input type='checkbox' name='allow_changes' value='1' %s>"
+                     "<span><strong>Allow changes</strong><small>Only with an existing connection that permits them. "
+                     "Without this, the assistant can only read.</small></span></label>" % ("" if can_write else "disabled"))
+    if not can_write:
+        change_option += "<small>%s</small>" % escape(write_note)
     return ("<!doctype html><html lang='en'><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>"
             "<title>ERPCloud MCP | Authorize</title><style>"
             "*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px;background:#f3f8f6;color:#17332f;font:15px system-ui,sans-serif}"
-            "main{width:min(460px,100%%);background:white;border:1px solid #e0eae5;border-radius:20px;padding:32px;box-shadow:0 24px 55px #113b2d15}"
+            "main{width:min(530px,100%%);background:white;border:1px solid #e0eae5;border-radius:20px;padding:32px;box-shadow:0 24px 55px #113b2d15}"
             "header{display:flex;align-items:center;gap:10px;color:#0b735e;font-weight:800;letter-spacing:.3px}header b{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#0b735e;color:white}"
             "h1{font-size:25px;letter-spacing:-.7px;margin:28px 0 6px}p{color:#637a72;line-height:1.6}.scope{padding:16px;margin:20px 0;border-radius:11px;background:#eff7f2;font-size:13px}"
+            ".facts{display:grid;gap:9px;margin:18px 0}.facts div{display:grid;grid-template-columns:100px 1fr;gap:8px;font-size:13px}.facts span{color:#71847c}.facts strong{overflow-wrap:anywhere}"
+            ".change{display:flex;gap:12px;align-items:flex-start;padding:14px;margin:16px 0;border:1px solid #d9e7e0;border-radius:10px}.change input{margin-top:3px;accent-color:#0a7159}.change strong,.change small{display:block}.change small{margin:5px 0 0}"
+            "details{margin:14px 0 22px;color:#31594d;font-size:13px}summary{cursor:pointer;font-weight:700}select{display:block;width:100%%;padding:10px;margin:10px 0;border:1px solid #d9e7e0;border-radius:8px}"
             "button{width:100%%;border:0;border-radius:9px;background:#0a7159;color:white;padding:13px;font:700 14px system-ui;cursor:pointer}small{display:block;margin-top:16px;color:#8a9991;line-height:1.5}"
-            "</style><main><header><b>✦</b> ERPCloud MCP Center</header><h1>Authorize AI connection</h1>"
-            "<p><strong>%s</strong> is requesting access to your Odoo account.</p><div class='scope'>Requested scope: <strong>%s</strong></div>"
-            "<form method='post'>%s<label for='key_id'>Connection and model grants</label><select id='key_id' name='key_id' style='display:block;width:100%%;padding:10px;margin:8px 0 20px;border:1px solid #d9e7e0;border-radius:8px'>%s</select><input type='hidden' name='csrf_token' value='%s'><button type='submit'>Allow connection</button></form>"
-            "<small>Your Odoo permissions and the selected connection scope still apply. You can revoke the key in MCP Center.</small>"
-            "</main></html>" % (escape(client_name), escape(scopes), hidden, options, escape(csrf_token)))
+            "</style><main><header><b>✦</b> ERPCloud MCP Center</header><h1>Sign in as the user</h1>"
+            "<p><strong>%s</strong> is requesting access to Odoo.</p>"
+            "<div class='facts'><div><span>Signed in as</span><strong>%s</strong></div><div><span>Company</span><strong>%s</strong></div><div><span>Returns to</span><strong>%s</strong></div></div>"
+            "<div class='scope'>Read access to customers, products and sales follow-up. Requested OAuth scope: <strong>%s</strong>.</div>"
+            "<form method='post'>%s%s<details><summary>Choose an existing connection (optional)</summary>"
+            "<select id='key_id' name='key_id'>%s</select><small>To allow changes, select a connection whose model rights were approved by an MCP Center manager.</small></details>"
+            "<script>const k=document.getElementById('key_id'),w=document.querySelector('[name=allow_changes]');if(w&&!w.disabled){w.addEventListener('change',()=>{if(w.checked&&k.value==='0'){w.checked=false;k.closest('details').open=true;k.focus()}})}</script>"
+            "<input type='hidden' name='csrf_token' value='%s'><button type='submit'>Sign in and allow</button></form>"
+            "<small>Odoo rights and company rules still apply. Revoke this connection in MCP Center at any time.</small>"
+            "</main></html>" % (escape(client_name), escape(user_name), escape(company_name),
+                              escape(redirect_uri), escape(" ".join(sorted(scopes))), hidden,
+                              change_option, options, escape(csrf_token)))
 
 
 class MCPOAuthController(http.Controller):
@@ -149,27 +169,33 @@ class MCPOAuthController(http.Controller):
             ("user_id", "=", request.env.user.id), ("company_id", "=", request.env.company.id),
             ("active", "=", True), ("expires_at", ">", fields.Datetime.now()),
         ]
-        if "write" in scopes:
-            key_domain.append(("scope", "in", ["quote", "write"]))
         keys = request.env["erpcloud.mcp.center.key"].sudo().search(key_domain, order="id desc", limit=30)
-        if not keys:
-            return request.make_response("No compatible ERPCloud MCP grant is assigned to this user.", status=403)
         if request.httprequest.method == "GET":
             hidden = "".join('<input type="hidden" name="%s" value="%s">' % (escape(name), escape(str(p.get(name) or ""))) for name in ("client_id", "redirect_uri", "response_type", "code_challenge", "code_challenge_method", "scope", "state", "resource"))
-            html = _consent_html(client.name, " ".join(sorted(scopes)), hidden, request.csrf_token(), keys)
+            html = _consent_html(client.name, redirect_uri, request.env.user.name,
+                                 request.env.company.name, scopes, hidden, request.csrf_token(), keys)
             return request.make_response(html, headers=[("Content-Type", "text/html; charset=utf-8"), ("Cache-Control", "no-store")])
         try:
             selected_key_id = int(p.get("key_id") or 0)
         except (TypeError, ValueError):
             selected_key_id = 0
-        key = keys.filtered(lambda row: row.id == selected_key_id)[:1]
-        if not key:
+        allow_changes = p.get("allow_changes") == "1"
+        key = keys.filtered(lambda row: row.id == selected_key_id)[:1] if selected_key_id else False
+        if selected_key_id and not key:
             return request.make_response("Select an authorized MCP connection.", status=403)
+        if allow_changes and ("write" not in scopes or not key or key.scope not in ("write", "quote")):
+            return request.make_response("A preapproved write connection is required for changes.", status=403)
+        if not key:
+            key, _secret = request.env["erpcloud.mcp.center.key"].issue(
+                "OAuth: %s" % client.name, scope="read", days=30)
+        granted_scopes = {"read"} | ({"offline_access"} if "offline_access" in scopes else set())
+        if allow_changes:
+            granted_scopes.add("write")
         raw_code = secrets.token_urlsafe(48)
         request.env["erpcloud.mcp.center.oauth.code"].sudo().create({
             "code_hash": oauth_hash(raw_code), "client_id": client.id, "key_id": key.id,
             "redirect_uri": redirect_uri, "code_challenge": challenge,
-            "scope": " ".join(sorted(scopes)),
+            "scope": " ".join(sorted(granted_scopes)), "resource_uri": _base() + "/mcp",
             "expires_at": fields.Datetime.add(fields.Datetime.now(), minutes=5),
         })
         query = {"code": raw_code}
@@ -196,8 +222,10 @@ class MCPOAuthController(http.Controller):
             ], limit=1)
             if not code or not secrets.compare_digest(code.code_challenge, challenge):
                 return _json({"error": "invalid_grant"}, 400)
+            if p.get("resource") and p.get("resource").rstrip("/") != code.resource_uri:
+                return _json({"error": "invalid_target"}, 400)
             code.consumed_at = fields.Datetime.now()
-            return _json(_issue_tokens(code.key_id, client, code.scope))
+            return _json(_issue_tokens(code.key_id, client, code.scope, code.resource_uri))
         if p.get("grant_type") == "refresh_token":
             token = request.env["erpcloud.mcp.center.oauth.refresh.token"].sudo().search([
                 ("token_hash", "=", oauth_hash(p.get("refresh_token"))),
@@ -208,8 +236,11 @@ class MCPOAuthController(http.Controller):
                 if token:
                     token.revoke_family()
                 return _json({"error": "invalid_grant"}, 400)
+            if p.get("resource") and p.get("resource").rstrip("/") != token.resource_uri:
+                return _json({"error": "invalid_target"}, 400)
             token.used_at = fields.Datetime.now()
-            return _json(_issue_tokens(token.key_id, client, token.scope, token.family_id))
+            return _json(_issue_tokens(token.key_id, client, token.scope,
+                                       token.resource_uri, token.family_id))
         return _json({"error": "unsupported_grant_type"}, 400)
 
     @http.route("/mcp/oauth/revoke", type="http", auth="none", methods=["POST"], csrf=False)

@@ -178,7 +178,8 @@ class MCPController(http.Controller):
             return _challenge("missing_bearer_token")
         bearer = auth[7:].strip()
         key = request.env["erpcloud.mcp.center.key"].sudo().authenticate(bearer)
-        oauth_access = request.env["erpcloud.mcp.center.oauth.access.token"].sudo().resolve_active(bearer) if not key else False
+        oauth_access = request.env["erpcloud.mcp.center.oauth.access.token"].sudo().resolve_active(
+            bearer, request.httprequest.url_root.rstrip("/") + "/mcp") if not key else False
         if oauth_access:
             key = oauth_access.key_id
         if not key:

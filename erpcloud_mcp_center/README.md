@@ -34,6 +34,10 @@ No ERPCloud private addon is required. Installation adds no sample customer or p
 
 ## Scope and limits
 
+### OAuth sign-in
+
+For OAuth-capable assistants, enter the public `https://your-odoo/mcp` URL. The assistant opens the Odoo sign-in page and the consent screen shows its name, your Odoo account, company, requested scope and return address. Approving the default creates a read-only connection automatically; there is no key to copy. **Allow changes** starts unticked. To enable it, a manager must first grant specific model operations to an existing connection; select that connection during consent. Odoo ACLs and record rules still apply. Authorization codes, access tokens and rotating refresh tokens are bound to this MCP server URL. Reusing a refresh token revokes its token family. Existing OAuth sign-ins must reconnect after this upgrade because older tokens have no resource binding.
+
 The curated workflow supports sales quotations; generic CRUD can operate on any explicitly granted installed persistent model within Odoo's normal security rules. It does not send or confirm orders through a special workflow, run arbitrary Odoo methods or connect to messaging channels. OAuth and third-party client UI compatibility depend on the client's current plan, policies and implementation; validate against the target client before customer rollout.
 
 The connection test in MCP Center exercises local MCP initialization and tool discovery. It does not prove that a remote AI provider can reach a private Odoo server.
