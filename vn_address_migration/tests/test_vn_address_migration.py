@@ -10,9 +10,13 @@ class TestVnAddressMigration(TransactionCase):
         self.country = self.env["res.country"].search([("code", "=", "VN")], limit=1)
         if not self.country:
             self.country = self.env["res.country"].create({"name": "Vietnam", "code": "VN"})
-        self.state_hn = self.env["res.country.state"].create({
-            "name": "Hà Nội", "code": "VN-HN", "country_id": self.country.id,
-        })
+        self.state_hn = self.env["res.country.state"].search([
+            ("code", "=", "VN-HN"), ("country_id", "=", self.country.id),
+        ], limit=1)
+        if not self.state_hn:
+            self.state_hn = self.env["res.country.state"].create({
+                "name": "Hà Nội", "code": "VN-HN", "country_id": self.country.id,
+            })
         self.mapping = self.env["vn.address.mapping"]
 
     def _mapping(self, **kw):
@@ -48,7 +52,7 @@ class TestVnAddressMigration(TransactionCase):
         self.assertEqual(partner.city, "Hồng Hà")
         self.assertEqual(mig.state, "applied")
         self.assertTrue(mig.applied_date)
-        self.assertEqual(mig.applied_uid, self.env.uid)
+        self.assertEqual(mig.applied_uid, self.env.user)
         # audit keeps old and new values
         self.assertEqual(mig.old_city, "Phúc Xá")
         self.assertEqual(mig.new_city, "Hồng Hà")
@@ -119,10 +123,10 @@ class TestVnAddressMigration(TransactionCase):
         )
         partner = self._partner(city="Phúc Xá")
         mig = self._scan(partner)
-        self.assertEqual(mig.create_uid, self.env.uid)
+        self.assertEqual(mig.create_uid, self.env.user)
         mig.action_apply()
         self.assertEqual(mig.state, "applied")
-        self.assertEqual(mig.applied_uid, self.env.uid)
+        self.assertEqual(mig.applied_uid, self.env.user)
         self.assertEqual(mig.mapping_id, m)
         self.assertEqual(mig.mapping_id.source_resolution, "1656/NQ-UBTVQH15")
         with self.assertRaises(UserError):
@@ -138,7 +142,7 @@ class TestVnAddressMigration(TransactionCase):
         user = self.env["res.users"].create({
             "name": "Plain User",
             "login": "plain_user_%s" % self.env.cr.dbname,
-            "groups_id": [(6, 0, [self.env.ref("base.group_user").id])],
+            "group_ids": [(6, 0, [self.env.ref("base.group_user").id])],
         })
         with self.assertRaises(AccessError):
             mig.with_user(user).action_apply()
@@ -155,9 +159,10 @@ class TestVnAddressMigration(TransactionCase):
         user = self.env["res.users"].create({
             "name": "Manager User",
             "login": "manager_user_%s" % self.env.cr.dbname,
-            "groups_id": [(6, 0, [
+            "group_ids": [(6, 0, [
                 self.env.ref("base.group_user").id,
                 self.env.ref("vn_address_migration.group_vn_address_migration_manager").id,
+                self.env.ref("base.group_partner_manager").id,
             ])],
         })
         mig.with_user(user).action_apply()

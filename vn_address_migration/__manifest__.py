@@ -10,7 +10,7 @@
     "depends": ["contacts"],
     "data": [
         "security/vn_address_migration_security.xml",
-        "security/ir.model.access.csv",
+        "security/ir.access.csv",
         "data/vn.address.mapping.csv",
         "views/vn_address_mapping_views.xml",
         "views/vn_address_migration_views.xml",

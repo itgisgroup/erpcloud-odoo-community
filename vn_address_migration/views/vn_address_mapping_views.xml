@@ -4,7 +4,7 @@
         <field name="name">vn.address.mapping.tree</field>
         <field name="model">vn.address.mapping</field>
         <field name="arch" type="xml">
-            <tree string="Mapping">
+            <list string="Mapping">
                 <field name="old_ward"/>
                 <field name="new_ward"/>
                 <field name="new_province"/>
@@ -13,7 +13,7 @@
                 <field name="is_default_new_ward"/>
                 <field name="source_resolution"/>
                 <field name="active" optional="hide"/>
-            </tree>
+            </list>
         </field>
     </record>
 

@@ -210,19 +210,23 @@ class VnAddressMigration(models.Model):
             raise UserError(_("A skipped migration cannot be applied."))
         if self.kind == "unmatched":
             raise UserError(_("No destination is known for this address; set one manually before applying."))
-        if self.kind == "review" and not self.mapping_id:
+        if not self.mapping_id:
             raise UserError(_("Choose a destination ward before applying."))
+        if self.kind in ("divided", "ambiguous") and self.mapping_id not in self.candidate_mapping_ids:
+            raise UserError(_("Choose a destination from this migration's candidates."))
         partner = self.partner_id
         partner.check_access("write")
-        write_vals = {}
-        if self.new_city:
-            write_vals["city"] = self.new_city
-        if self.new_state_id:
-            write_vals["state_id"] = self.new_state_id.id
-        if not write_vals:
+        new_city = self.mapping_id.new_ward
+        new_state = self._resolve_state(self.mapping_id.new_province)
+        if not new_city:
             raise UserError(_("No destination value is set on this migration."))
+        write_vals = {"city": new_city}
+        if new_state:
+            write_vals["state_id"] = new_state.id
         partner.write(write_vals)
         self.write({
+            "new_city": new_city,
+            "new_state_id": new_state.id if new_state else False,
             "state": "applied",
             "applied_uid": self.env.uid,
             "applied_date": fields.Datetime.now(),

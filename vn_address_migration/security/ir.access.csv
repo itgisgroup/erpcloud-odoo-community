@@ -1,0 +1,6 @@
+id,name,model_id,group_id/id,operation,domain
+access_vn_address_mapping_user,vn.address.mapping.user,vn.address.mapping,base.group_user,r,
+access_vn_address_mapping_erp_manager,vn.address.mapping.erp_manager,vn.address.mapping,base.group_erp_manager,crud,
+access_vn_address_migration_user,vn.address.migration.user,vn.address.migration,base.group_user,cr,
+access_vn_address_migration_manager,vn.address.migration.manager,vn.address.migration,vn_address_migration.group_vn_address_migration_manager,cru,
+rule_vn_address_migration_company,Address migration multi-company,vn.address.migration,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
