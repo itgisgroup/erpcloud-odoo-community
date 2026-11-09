@@ -51,10 +51,9 @@ The bundled `data/vn.address.mapping.csv` is the **authoritative 10,602-row
 dataset** (unchanged 149 / renamed 92 / merged 9,328 / divided 1,033), generated
 from the single source confirmed by Release (SRS §2 gate).
 
-| Source | License |
-|---|---|
-| [`undertheseanlp/address`](https://huggingface.co/undertheseanlp/address) (packaging) | Apache-2.0 |
-| `vietnamadminunits` v1.0.4 (PyPI, upstream data) | MIT |
+- [`undertheseanlp/address`](https://huggingface.co/undertheseanlp/address)
+  (packaging): Apache-2.0.
+- `vietnamadminunits` v1.0.4 (PyPI, upstream data): MIT.
 
 **Attribution:** administrative data generated from `undertheseanlp/address`
 (Apache-2.0, Hugging Face) on top of `vietnamadminunits` v1.0.4 (MIT, PyPI);
