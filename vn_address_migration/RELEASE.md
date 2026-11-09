@@ -27,13 +27,16 @@ Not published; QA and Release remain with the Lead.
 - Views: menu under Contacts (Quét địa chỉ / Hàng đợi rà soát / Mapping cũ→mới),
   tree+form for both models, scan wizard.
 
-## Data — DRAFT, pending Release
+## Data — FINAL (Release confirmed 2026-11-09)
 
-`data/vn.address.mapping.csv` is a 6-row illustrative sample only. The
-authoritative ~10,602-row dataset and its exact attribution string are deferred
-to Release (SRS §2 gate); `data/DATA_NOTES.md` documents the schema, the
-candidate sources (`undertheseanlp/address` Apache-2.0/upstream MIT, or
-`dorabot-io/dia-chi` CC BY 4.0) and a DRAFT attribution line to be confirmed.
+`data/vn.address.mapping.csv` is the authoritative 10,602-row dataset
+(unchanged 149 / renamed 92 / merged 9,328 / divided 1,033) replacing the 6-row
+sample. Source confirmed by Release: `undertheseanlp/address` (Apache-2.0,
+Hugging Face) on top of `vietnamadminunits` v1.0.4 (MIT, PyPI); legal basis:
+National Assembly resolutions (01/07/2025), per-province Standing Committee
+resolutions and Decision 19/2025/QĐ-TTg. 90 rows have key-derived names flagged
+for QA backfill; `source_resolution`/`source_clause` and ward codes are empty
+(source does not provide them). See `data/DATA_NOTES.md`.
 
 ## Test status — BLOCKED (not executed here)
 

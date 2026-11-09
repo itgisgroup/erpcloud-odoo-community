@@ -45,23 +45,28 @@ review. Permissions follow the current ACL/record rules: users only scan contact
 they can read, and only managers (or users with write access to both the
 migration record and the contact) can apply.
 
-## Data provenance — DRAFT, pending Release confirmation
+## Data provenance
 
-The bundled `data/vn.address.mapping.csv` is a **6-row illustrative sample**,
-not the authoritative dataset. Per the SRS the final data source and the exact
-attribution string must be confirmed by Release before the full dataset is
-packaged. Candidate sources:
+The bundled `data/vn.address.mapping.csv` is the **authoritative 10,602-row
+dataset** (unchanged 149 / renamed 92 / merged 9,328 / divided 1,033), generated
+from the single source confirmed by Release (SRS §2 gate).
 
 | Source | License |
 |---|---|
-| [`undertheseanlp/address`](https://huggingface.co/undertheseanlp/address) (recommended) | packaging Apache-2.0; upstream `vietnamadminunits` MIT |
-| [`dorabot-io/dia-chi`](https://github.com/dorabot-io/dia-chi) | code MIT; data CC BY 4.0 |
+| [`undertheseanlp/address`](https://huggingface.co/undertheseanlp/address) (packaging) | Apache-2.0 |
+| `vietnamadminunits` v1.0.4 (PyPI, upstream data) | MIT |
 
-**DRAFT attribution (not final):** administrative data generated from
-`undertheseanlp/address` (Apache-2.0, Hugging Face) on top of `vietnamadminunits`
-v1.0.4 (MIT, PyPI); legal basis: National Assembly resolutions (effective
-01/07/2025), per-province Standing Committee resolutions and Decision
-19/2025/QĐ-TTg (code table). See `data/DATA_NOTES.md`.
+**Attribution:** administrative data generated from `undertheseanlp/address`
+(Apache-2.0, Hugging Face) on top of `vietnamadminunits` v1.0.4 (MIT, PyPI);
+legal basis: National Assembly resolutions (effective 01/07/2025), per-province
+Standing Committee resolutions and Decision 19/2025/QĐ-TTg (code table). See
+`data/DATA_NOTES.md`.
+
+**Known data gaps (QA to verify before publish):** 90 of the 10,602 rows have a
+ward name missing in the source; these were backfilled from the source's
+normalised key and flagged `name key-derived (QA backfill)` in `source_note`.
+Per-record `source_resolution`/`source_clause` and ward codes are left empty
+(the chosen source does not provide them). See `data/DATA_NOTES.md`.
 
 ## License and support
 
