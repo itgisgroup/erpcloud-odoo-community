@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Actions -->
+    <record id="action_vn_address_migration" model="ir.actions.act_window">
+        <field name="name">Địa chỉ cần rà soát</field>
+        <field name="res_model">vn.address.migration</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Quét địa chỉ 3 cấp để tạo đề xuất di cư, rồi duyệt từng ca.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_vn_address_mapping" model="ir.actions.act_window">
+        <field name="name">Mapping cũ → mới</field>
+        <field name="res_model">vn.address.mapping</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_vn_address_scan_wizard" model="ir.actions.act_window">
+        <field name="name">Quét địa chỉ</field>
+        <field name="res_model">vn.address.scan.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_vn_address_migration_root"
+              name="Địa chỉ di cư"
+              parent="contacts.menu_contacts"
+              sequence="40"/>
+    <menuitem id="menu_vn_address_migration_scan"
+              name="Quét địa chỉ"
+              parent="menu_vn_address_migration_root"
+              action="action_vn_address_scan_wizard"
+              sequence="10"/>
+    <menuitem id="menu_vn_address_migration_review"
+              name="Hàng đợi rà soát"
+              parent="menu_vn_address_migration_root"
+              action="action_vn_address_migration"
+              sequence="20"/>
+    <menuitem id="menu_vn_address_migration_mapping"
+              name="Mapping cũ → mới"
+              parent="menu_vn_address_migration_root"
+              action="action_vn_address_mapping"
+              sequence="30"/>
+
+    <!-- Migration views -->
+    <record id="vn_address_migration_tree" model="ir.ui.view">
+        <field name="name">vn.address.migration.tree</field>
+        <field name="model">vn.address.migration</field>
+        <field name="arch" type="xml">
+            <tree string="Migrations"
+                  decoration-warning="state == 'review'"
+                  decoration-muted="state in ('applied', 'skipped')">
+                <field name="partner_id"/>
+                <field name="kind"/>
+                <field name="state"/>
+                <field name="old_city"/>
+                <field name="new_city"/>
+                <field name="mapping_id"/>
+                <field name="applied_uid"/>
+                <field name="applied_date" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="vn_address_migration_form" model="ir.ui.view">
+        <field name="name">vn.address.migration.form</field>
+        <field name="model">vn.address.migration</field>
+        <field name="arch" type="xml">
+            <form string="Migration">
+                <header>
+                    <button name="action_apply" string="Áp dụng" type="object"
+                            class="btn-primary"
+                            attrs="{'invisible': [('state', 'in', ['applied', 'skipped'])]}"
+                            confirm="Ghi đè địa chỉ của liên hệ theo đề xuất?"/>
+                    <button name="action_skip" string="Bỏ qua" type="object"
+                            attrs="{'invisible': [('state', 'in', ['applied', 'skipped'])]}"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="kind"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="mapping_id"
+                                   attrs="{'required': [('kind', '=', 'review')]}"/>
+                            <field name="candidate_mapping_ids" widget="many2many_tags"
+                                   attrs="{'invisible': [('kind', 'not in', ['divided', 'ambiguous'])]}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Cũ (gốc)" name="old">
+                            <group>
+                                <field name="old_street"/>
+                                <field name="old_street2"/>
+                                <field name="old_city"/>
+                                <field name="old_state_id"/>
+                                <field name="old_country_id"/>
+                                <field name="old_zip"/>
+                            </group>
+                        </page>
+                        <page string="Mới (đề xuất)" name="new">
+                            <group>
+                                <field name="new_street"/>
+                                <field name="new_street2"/>
+                                <field name="new_city"/>
+                                <field name="new_state_id"/>
+                                <field name="new_country_id"/>
+                                <field name="new_zip"/>
+                            </group>
+                        </page>
+                        <page string="Audit" name="audit">
+                            <group>
+                                <field name="applied_uid"/>
+                                <field name="applied_date"/>
+                                <field name="create_uid"/>
+                                <field name="create_date"/>
+                            </group>
+                        </page>
+                    </notebook>
+                    <group string="Lý do">
+                        <field name="reason" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Scan wizard -->
+    <record id="vn_address_scan_wizard_form" model="ir.ui.view">
+        <field name="name">vn.address.scan.wizard.form</field>
+        <field name="model">vn.address.scan.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Quét địa chỉ">
+                <group>
+                    <p class="text-muted">
+                        Chọn các liên hệ cần quét địa chỉ 3 cấp. Module chỉ tạo đề xuất,
+                        không sửa địa chỉ gốc cho đến khi bạn chọn "Áp dụng".
+                    </p>
+                    <field name="partner_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_scan" string="Quét" type="object" class="btn-primary"/>
+                    <button string="Hủy" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

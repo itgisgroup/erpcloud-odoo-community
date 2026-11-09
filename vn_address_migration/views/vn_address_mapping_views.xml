@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="vn_address_mapping_tree" model="ir.ui.view">
+        <field name="name">vn.address.mapping.tree</field>
+        <field name="model">vn.address.mapping</field>
+        <field name="arch" type="xml">
+            <tree string="Mapping">
+                <field name="old_ward"/>
+                <field name="new_ward"/>
+                <field name="new_province"/>
+                <field name="classification"/>
+                <field name="phan"/>
+                <field name="is_default_new_ward"/>
+                <field name="source_resolution"/>
+                <field name="active" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="vn_address_mapping_form" model="ir.ui.view">
+        <field name="name">vn.address.mapping.form</field>
+        <field name="model">vn.address.mapping</field>
+        <field name="arch" type="xml">
+            <form string="Mapping">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="old_ward"/>
+                            <field name="old_code"/>
+                            <field name="new_ward"/>
+                            <field name="new_code"/>
+                            <field name="new_province"/>
+                            <field name="new_province_code"/>
+                        </group>
+                        <group>
+                            <field name="classification"/>
+                            <field name="phan"/>
+                            <field name="is_default_new_ward"/>
+                            <field name="source_resolution"/>
+                            <field name="source_clause"/>
+                            <field name="source_effective_date"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Source note">
+                        <field name="source_note" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_vn_address_mapping_user,vn.address.mapping.user,model_vn_address_mapping,base.group_user,1,0,0,0
+access_vn_address_mapping_erp_manager,vn.address.mapping.erp_manager,model_vn_address_mapping,base.group_erp_manager,1,1,1,1
+access_vn_address_migration_user,vn.address.migration.user,model_vn_address_migration,base.group_user,1,0,1,0
+access_vn_address_migration_manager,vn.address.migration.manager,model_vn_address_migration,vn_address_migration.group_vn_address_migration_manager,1,1,1,0

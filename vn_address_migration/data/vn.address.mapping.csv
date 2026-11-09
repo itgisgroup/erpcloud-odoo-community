@@ -1,0 +1,7 @@
+id,old_ward,old_code,new_ward,new_code,new_province,new_province_code,classification,phan,is_default_new_ward,source_resolution,source_clause,source_effective_date,source_note
+vn_address_mapping_sample_unchanged,Giảng Võ,,Giảng Võ,,Hà Nội,,unchanged,full,False,1656/NQ-UBTVQH15,,2025-07-01,SAMPLE - illustrative only; not the authoritative dataset
+vn_address_mapping_sample_renamed,Xã Mễ Trì,,Phường Mễ Trì,,Hà Nội,,renamed,full,False,1656/NQ-UBTVQH15,,2025-07-01,SAMPLE - illustrative only; not the authoritative dataset
+vn_address_mapping_sample_merged_1,Phúc Xá,,Hồng Hà,,Hà Nội,,merged,full,False,1656/NQ-UBTVQH15,,2025-07-01,SAMPLE - illustrative only; not the authoritative dataset
+vn_address_mapping_sample_merged_2,Nhật Tân,,Tây Hồ,,Hà Nội,,merged,full,False,1656/NQ-UBTVQH15,,2025-07-01,SAMPLE - illustrative only; not the authoritative dataset
+vn_address_mapping_sample_divided_1,Cống Vị,,Ngọc Hà,,Hà Nội,,divided,partial,True,1656/NQ-UBTVQH15,,2025-07-01,SAMPLE - illustrative only; not the authoritative dataset
+vn_address_mapping_sample_divided_2,Cống Vị,,Giảng Võ,,Hà Nội,,divided,partial,False,1656/NQ-UBTVQH15,,2025-07-01,SAMPLE - illustrative only; not the authoritative dataset

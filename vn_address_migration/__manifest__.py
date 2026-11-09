@@ -1,0 +1,20 @@
+{
+    "name": "Vietnam Address Migration",
+    "version": "20.0.1.0.0",
+    "summary": "Migrate contacts from 3-level to 2-level Vietnamese addresses",
+    "category": "Contacts",
+    "author": "ERPCloud",
+    "website": "https://erpcloud.vn",
+    "support": "info@erpcloud.vn",
+    "license": "LGPL-3",
+    "depends": ["contacts"],
+    "data": [
+        "security/vn_address_migration_security.xml",
+        "security/ir.model.access.csv",
+        "data/vn.address.mapping.csv",
+        "views/vn_address_mapping_views.xml",
+        "views/vn_address_migration_views.xml",
+    ],
+    "installable": True,
+    "application": False,
+}
