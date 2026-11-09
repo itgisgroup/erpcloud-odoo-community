@@ -1,0 +1,20 @@
+// Keep Odoo's copy button while showing every address component in the form.
+.o_vn_delivery_address_copy {
+    &.text-truncate,
+    .text-truncate {
+        overflow: visible;
+        white-space: normal;
+    }
+
+    span:not([data-icon='assignment']) {
+        min-width: 0;
+        overflow: visible;
+        text-overflow: clip;
+        overflow-wrap: anywhere;
+        white-space: normal;
+    }
+
+    .o_clipboard_button {
+        flex-shrink: 0;
+    }
+}

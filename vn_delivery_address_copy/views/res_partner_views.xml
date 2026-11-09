@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//form/sheet/group/group[1]/div[hasclass('o_address_format')]" position="after">
-                <field name="vn_delivery_address_copy" widget="CopyClipboardChar" readonly="1"/>
+                <field name="vn_delivery_address_copy" widget="CopyClipboardChar" readonly="1" class="o_vn_delivery_address_copy"/>
                 <div class="text-muted" role="status" invisible="vn_delivery_address_copy">
                     Chưa có thành phần địa chỉ để sao chép.
                 </div>
