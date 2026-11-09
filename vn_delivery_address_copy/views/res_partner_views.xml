@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_delivery_address_copy" model="ir.ui.view">
+        <field name="name">res.partner.form.delivery.address.copy</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/group/group[1]/div[hasclass('o_address_format')]" position="after">
+                <field name="vn_delivery_address_copy" widget="CopyClipboardChar" readonly="1"/>
+                <div class="text-muted" role="status" invisible="vn_delivery_address_copy">
+                    Chưa có thành phần địa chỉ để sao chép.
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>
